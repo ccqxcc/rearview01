@@ -27,7 +27,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="对影成三人"/>
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询后视镜状态"
+        android:id="@+id/getMirrorStatus"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,13 +64,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:max="15"
-                android:progress="15" />
+                android:progress="5" />
             <TextView
                 android:id="@+id/lightVolumeText"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="15" />
+                android:text="5" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
@@ -86,14 +90,14 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="7"
-                android:progress="5" />
+                android:max="5"
+                android:progress="3" />
             <TextView
                 android:id="@+id/heightVolumeText"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5" />
+                android:text="3" />
         </LinearLayout>
     </LinearLayout>
 
