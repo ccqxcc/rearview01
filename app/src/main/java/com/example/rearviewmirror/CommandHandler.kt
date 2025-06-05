@@ -2,13 +2,20 @@ package com.example.rearviewmirror
 
 import android.util.Log
 
+class Protocal {
+    companion object {
+        const val START_BYTE = 0xA5
+        const val END_BYTE = 0x5A
+    }
+}
+
 class CommandHandler {
     // 处理数据的函数
     fun sendCommand(cmd: IntArray): IntArray {
         val cmdSize = cmd.size
         // 创建足够长的 uartData 数组（至少 cmdSize + 4）
         val uartData = IntArray(cmdSize + 5)
-        uartData[0] = 0xA5
+        uartData[0] = Protocal.START_BYTE // 0xA5
         // 设置第2/3个元素为 cmdSize（索引为1,2, 大端模式）
         uartData[1] = cmdSize / 256
         uartData[2] = cmdSize % 256
@@ -19,8 +26,9 @@ class CommandHandler {
             checksum = checksum xor uartData[index]
         }
         uartData[3 + cmdSize] = checksum; //异或操作
-        uartData[4 + cmdSize] = 0x5A;
+        uartData[4 + cmdSize] = Protocal.END_BYTE
         Log.d("UART", "发送数据: ${uartData.contentToString()}")
+        //TO DO : to send to UART
         return uartData
     }
 
@@ -35,7 +43,7 @@ class CommandHandler {
         }
 
         // 2. 检查起始字节和结束字节
-        if (uartData[0] != 0xA5) {
+        if (uartData[0] != Protocal.START_BYTE) { // 0xA5) {
             Log.e("UART", "无效的起始字节: ${uartData[0].toHex()} (应为0xA5)")
             return null
         }
@@ -52,7 +60,7 @@ class CommandHandler {
 
         // 5. 检查结束字节
         val endIndex = 4 + cmdSize
-        if (uartData[endIndex] != 0x5A) {
+        if (uartData[endIndex] != Protocal.END_BYTE) {// 0x5A) {
             Log.e("UART", "无效的结束字节: ${uartData[endIndex].toHex()} (应为0x5A)")
             return null
         }

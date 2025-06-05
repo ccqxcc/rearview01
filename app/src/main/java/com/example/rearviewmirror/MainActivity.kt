@@ -31,13 +31,14 @@ class MainActivity : AppCompatActivity() {
         val mirrorStatus = findViewById<Button>(R.id.getMirrorStatus)
         mirrorStatus.setOnClickListener {
             //发命令到后视镜并待返回
-            mirrorCommand.GetRearviewStatus()
-
-            // 模拟后视镜返回信息，读取并解码
-            mirrorCommand.decodeRearviewStatus(mirror)
+            mirrorCommand.getRearviewStatus()
             Log.d("Button", mirror.lightVolume.toString())
+            // 模拟后视镜返回信息，读取并解码
+            val result = mirrorCommand.decodeRearviewStatus()
             //按后视镜返回的信息更新车机界面状态
-            updateActivityView(mirror)
+            if (result != null) {
+                updateActivityView(result)
+            }
         }
 
         val rearSwitch = findViewById<Switch>(R.id.rearSwitch)
