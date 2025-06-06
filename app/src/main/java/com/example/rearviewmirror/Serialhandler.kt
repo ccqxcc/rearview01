@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.Log
 import com.vi.vioserial.NormalSerial
 
-class SerialHandler(context: Context, devicePath: String, baudRate: Int) {
+class SerialHandler(devicePath: String, baudRate: Int) {
     // 成员变量：串口实例
     private val serial: NormalSerial
+
     // 1. 声明成员变量保存监听器引用
     private lateinit var dataListener: (String) -> Unit
+
     // 初始化块（在构造函数执行时调用）
     init {
         // 1. 获取 NormalSerial 单例
@@ -18,7 +20,8 @@ class SerialHandler(context: Context, devicePath: String, baudRate: Int) {
         serial.open(devicePath, baudRate) // "/dev/ttyS1", 9600
 
         // 3. 创建监听器并保存引用
-        dataListener = { uartData -> handleReceivedData(uartData)
+        dataListener = { uartData ->
+            handleReceivedData(uartData)
         }
 
         // 4 注册数据监听器
@@ -34,13 +37,13 @@ class SerialHandler(context: Context, devicePath: String, baudRate: Int) {
 
         // 示例：简单回显
         if (data.isNotEmpty()) {
-            sendData(data.toByteArray())
+            // sendData(data.toByteArray())
         }
     }
 
     // 发送数据方法
     fun sendData(uartData: ByteArray) {
-            serial.sendHex(uartData.toHexString())
+        serial.sendHex(uartData.toHexString())
     }
 
     // 关闭串口方法

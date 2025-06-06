@@ -14,6 +14,21 @@ class Protocal {
 
 class CommandHandler {
     var uartOpenStatus: Int = -4
+    private lateinit var serialHandler: SerialHandler
+
+    init {
+        // 初始化串口处理类
+        serialHandler = SerialHandler(
+            devicePath = "/dev/ttyS1",
+            baudRate = 9600
+        )
+    }
+
+    fun onDestroy() {
+        // 清理资源
+        serialHandler.close()
+    }
+
     // 处理数据的函数
     fun sendCommand(cmd: IntArray) {
         val cmdSize = cmd.size
@@ -32,8 +47,10 @@ class CommandHandler {
         uartData[3 + cmdSize] = checksum; //异或操作
         uartData[4 + cmdSize] = Protocal.END_BYTE
         Log.d("UART", "发送数据: ${uartData.contentToString()}")
-        writeUart(uartData)
-      }
+        //writeUart(uartData)
+        val byteData = intArrayToByteArray(uartData)
+        serialHandler.sendData(byteData)
+    }
 
     // 解析UART数据帧的函数
     fun parseUartData(uartData: IntArray): Pair<IntArray, Int>? {
@@ -110,15 +127,22 @@ class CommandHandler {
         }
     }
 
-    fun writeUart(uartData: IntArray) {
-//        if (uartOpenStatus != 0) {
-//            uartOpenStatus = NormalSerial.instance().open("/dev/ttyS1", 9600)
-//        }
-//        if (uartOpenStatus == 0) {
-//            Log.i("UART", "open success")
-//            NormalSerial.instance().sendHex(uartData.toHexString())
-//        }
+    fun intArrayToByteArray(intArray: IntArray): ByteArray {
+        return ByteArray(intArray.size) { index ->
+            intArray[index].toByte() // 直接转换，但注意符号问题
+        }
     }
+
+    fun writeUart(uartData: IntArray) {
+        if (uartOpenStatus != 0) {
+            uartOpenStatus = NormalSerial.instance().open("/dev/ttyS1", 9600)
+        }
+        if (uartOpenStatus == 0) {
+            Log.i("UART", "open success")
+            NormalSerial.instance().sendHex(uartData.toHexString())
+        }
+    }
+
     fun monitorUart() {
         if (uartOpenStatus == 0) {
             // 使用专用线程处理数据
@@ -133,8 +157,7 @@ class CommandHandler {
         }
     }
 
-    fun openUart()
-    {
-        val serial = NormalSerial.instance().apply { open ("/dev/ttyS1", 9600)}
+    fun openUart() {
+        val serial = NormalSerial.instance().apply { open("/dev/ttyS1", 9600) }
     }
 }
