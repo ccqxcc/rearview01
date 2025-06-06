@@ -24,11 +24,11 @@ class Command {
 class MirrorCommand {
     fun setMirrorSwitch(rearSwitch: Int) {
         val cmd = IntArray(3)
-        cmd[0] = Command.HOST_SET_SWITCH // 0x84
+        cmd[0] = Command.HOST_SET_SWITCH
         cmd[1] = rearSwitch
         cmd[2] = 0
         val cmdHandler = CommandHandler()
-        val uartData = cmdHandler.sendCommand(cmd)
+        cmdHandler.sendCommand(cmd)
     }
 
     fun setLightVolume(lightVolume: Int) {
@@ -37,7 +37,7 @@ class MirrorCommand {
         cmd[1] = lightVolume
         cmd[2] = 0
         val cmdHandler = CommandHandler()
-        val uartData = cmdHandler.sendCommand(cmd)
+        cmdHandler.sendCommand(cmd)
     }
 
     fun setHeightVolume(heightVolume: Int) {
@@ -46,7 +46,7 @@ class MirrorCommand {
         cmd[1] = heightVolume
         cmd[2] = 0
         val cmdHandler = CommandHandler()
-        val uartData = cmdHandler.sendCommand(cmd)
+        cmdHandler.sendCommand(cmd)
     }
 
     fun setViewZoom(viewZoom: Int) {
@@ -55,7 +55,7 @@ class MirrorCommand {
         cmd[1] = viewZoom
         cmd[2] = 0
         val cmdHandler = CommandHandler()
-        val uartData = cmdHandler.sendCommand(cmd)
+        cmdHandler.sendCommand(cmd)
     }
 
     fun setViewMode(viewMode: Int) {
@@ -64,14 +64,14 @@ class MirrorCommand {
         cmd[1] = viewMode
         cmd[2] = 0
         val cmdHandler = CommandHandler()
-        val uartData = cmdHandler.sendCommand(cmd)
+        cmdHandler.sendCommand(cmd)
     }
 
     fun getRearviewStatus() {
         val cmd = IntArray(1)
         cmd[0] = Command.HOST_GET_STATUS
         val cmdHandler = CommandHandler()
-        val uartData = cmdHandler.sendCommand(cmd)
+        cmdHandler.sendCommand(cmd)
     }
 
     fun updateRearViewStatus(cmd: IntArray): RearMirror? {
@@ -126,7 +126,7 @@ class MirrorCommand {
         val cmd = IntArray(1)
         cmd[0] = Command.HOST_GET_VERSION
         val cmdHandler = CommandHandler()
-        val uartData = cmdHandler.sendCommand(cmd)
+        cmdHandler.sendCommand(cmd)
     }
 
     fun decodeRearviewSoftwareVersion() {
@@ -137,7 +137,7 @@ class MirrorCommand {
         val cmd = IntArray(1)
         cmd[0] = Command.HOST_GET_IDENTITY
         val cmdHandler = CommandHandler()
-        val uartData = cmdHandler.sendCommand(cmd)
+        cmdHandler.sendCommand(cmd)
     }
 
     fun decodeRearviewDeviceIdentity() {

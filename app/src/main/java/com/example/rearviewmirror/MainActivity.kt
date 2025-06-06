@@ -15,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var serialHandler: SerialHandler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,14 +27,21 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        // 初始化串口处理类
+        serialHandler = SerialHandler(
+            context = this,
+            devicePath = "/dev/ttyS1",
+            baudRate = 9600
+        )
+
         val mirror = RearMirror()
         val mirrorCommand = MirrorCommand()
+        //mirrorCommand.getRearviewStatus()
         // 查询后视镜状态
         val mirrorStatus = findViewById<Button>(R.id.getMirrorStatus)
         mirrorStatus.setOnClickListener {
             //发命令到后视镜并待返回
             mirrorCommand.getRearviewStatus()
-            Log.d("Button", mirror.lightVolume.toString())
             // 模拟后视镜返回信息，读取并解码
             val result = mirrorCommand.decodeRearviewStatus()
             //按后视镜返回的信息更新车机界面状态
@@ -200,5 +209,10 @@ class MainActivity : AppCompatActivity() {
         else if (mirror.viewMode == RearMirror.ViewMode.MODE_ENHANCED) viewMode.check(R.id.viewEnhanced)
         else {
         }
+    }
+    override fun onDestroy() {
+        // 清理资源
+        serialHandler.close()
+        super.onDestroy()
     }
 }

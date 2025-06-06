@@ -1,6 +1,9 @@
 package com.example.rearviewmirror
 
 import android.util.Log
+import com.vi.vioserial.NormalSerial
+import java.util.concurrent.Executors
+
 
 class Protocal {
     companion object {
@@ -10,8 +13,9 @@ class Protocal {
 }
 
 class CommandHandler {
+    var uartOpenStatus: Int = -4
     // 处理数据的函数
-    fun sendCommand(cmd: IntArray): IntArray {
+    fun sendCommand(cmd: IntArray) {
         val cmdSize = cmd.size
         // 创建足够长的 uartData 数组（至少 cmdSize + 4）
         val uartData = IntArray(cmdSize + 5)
@@ -28,9 +32,8 @@ class CommandHandler {
         uartData[3 + cmdSize] = checksum; //异或操作
         uartData[4 + cmdSize] = Protocal.END_BYTE
         Log.d("UART", "发送数据: ${uartData.contentToString()}")
-        //TO DO : to send to UART
-        return uartData
-    }
+        writeUart(uartData)
+      }
 
     // 解析UART数据帧的函数
     fun parseUartData(uartData: IntArray): Pair<IntArray, Int>? {
@@ -43,7 +46,7 @@ class CommandHandler {
         }
 
         // 2. 检查起始字节和结束字节
-        if (uartData[0] != Protocal.START_BYTE) { // 0xA5) {
+        if (uartData[0] != Protocal.START_BYTE) {
             Log.e("UART", "无效的起始字节: ${uartData[0].toHex()} (应为0xA5)")
             return null
         }
@@ -60,7 +63,7 @@ class CommandHandler {
 
         // 5. 检查结束字节
         val endIndex = 4 + cmdSize
-        if (uartData[endIndex] != Protocal.END_BYTE) {// 0x5A) {
+        if (uartData[endIndex] != Protocal.END_BYTE) {
             Log.e("UART", "无效的结束字节: ${uartData[endIndex].toHex()} (应为0x5A)")
             return null
         }
@@ -99,4 +102,39 @@ class CommandHandler {
 
     // 将整数转换为十六进制字符串的扩展函数
     private fun Int.toHex() = "0x${this.toString(16).padStart(2, '0').uppercase()}"
+
+    // 将整数数组转为十六进制大写字符串数组
+    fun IntArray.toHexString(): String {
+        return joinToString("") {
+            "${it.toString(16).uppercase().padStart(2, '0')}"
+        }
+    }
+
+    fun writeUart(uartData: IntArray) {
+//        if (uartOpenStatus != 0) {
+//            uartOpenStatus = NormalSerial.instance().open("/dev/ttyS1", 9600)
+//        }
+//        if (uartOpenStatus == 0) {
+//            Log.i("UART", "open success")
+//            NormalSerial.instance().sendHex(uartData.toHexString())
+//        }
+    }
+    fun monitorUart() {
+        if (uartOpenStatus == 0) {
+            // 使用专用线程处理数据
+            val dataProcessor = Executors.newSingleThreadExecutor()
+            NormalSerial.instance().addDataListener { data ->
+                dataProcessor.submit {
+                    // 耗时解析操作,注意，默认接收的类型为hex
+                    //val result = parseComplexData(data)
+                    //runOnUiThread { updateUI(result) }
+                }
+            }
+        }
+    }
+
+    fun openUart()
+    {
+        val serial = NormalSerial.instance().apply { open ("/dev/ttyS1", 9600)}
+    }
 }
