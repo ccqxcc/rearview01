@@ -33,14 +33,37 @@ class SerialHandler(devicePath: String, baudRate: Int) {
 
     // 数据处理函数
     private fun handleReceivedData(data: String) {
-        // 在这里实现数据解析逻辑
-
-        // 示例：简单回显
         if (data.isNotEmpty()) {
-            // sendData(data.toByteArray())
+            // sendData(data.toByteArray())// 示例：简单回显
+            // 转换成IntArray
+
+            val result = StringToIntArray(data)
+            val (uartData, uartDataSize) = result
+/*
+            // 解析命令, 与receiveCommand重复
+            val parser = CommandHandler()
+            val cmdResult = parser.parseUartData(uartData)
+            if (cmdResult != null) {
+                val (cmd, cmdSize) = cmdResult
+//
+//              val mirrorCommand = MirrorCommand()
+//              mirrorCommand.receiveCommand(cmd,cmdSize)
+                //return updateRearViewStatus(cmd)
+            }
+*/
         }
     }
 
+    fun StringToIntArray(data:String):Pair<IntArray, Int>
+    {
+        val dataUart = IntArray(128)
+        var dataIndex = 0
+        for(i in data.indices) {
+            dataUart[dataIndex] = data[i].code
+            dataIndex ++
+        }
+        return Pair(dataUart, dataIndex)
+    }
     // 发送数据方法
     fun sendData(uartData: ByteArray) {
         serial.sendHex(uartData.toHexString())

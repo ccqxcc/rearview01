@@ -47,7 +47,6 @@ class CommandHandler {
         uartData[3 + cmdSize] = checksum; //异或操作
         uartData[4 + cmdSize] = Protocal.END_BYTE
         Log.d("UART", "发送数据: ${uartData.contentToString()}")
-        //writeUart(uartData)
         val byteData = intArrayToByteArray(uartData)
         serialHandler.sendData(byteData)
     }
