@@ -1,9 +1,6 @@
 package com.example.rearviewmirror
 
 import android.util.Log
-import com.vi.vioserial.NormalSerial
-import java.util.concurrent.Executors
-
 
 class Protocal {
     companion object {
@@ -12,15 +9,16 @@ class Protocal {
     }
 }
 
-object CommandHandler {
+class CommandHandler(private val _viewModel: MyViewModel) {
     private lateinit var serialHandler: SerialHandler
-
+    private lateinit var viewModel: MyViewModel
     init {
         // 初始化串口处理类
-        serialHandler = SerialHandler(
+        serialHandler = SerialHandler(this,
             devicePath = "/dev/ttyS1",
             baudRate = 9600
         )
+        viewModel = _viewModel
     }
 
     fun onDestroy() {
@@ -130,5 +128,73 @@ object CommandHandler {
             intArray[index].toByte() // 直接转换，但注意符号问题
         }
     }
+    fun receiveCommand(cmd: IntArray, cmdSize: Int) {
+        if (cmd.size > 0) {
+            when (cmd[0]) {
+                Command.HOST_GET_STATUS -> {
+                    updateRearViewStatus(cmd, cmdSize)
+                }
 
+                Command.HOST_GET_VERSION -> {}
+                Command.HOST_GET_IDENTITY -> {}
+                Command.SLAVE_UPDATE_STATUS -> {
+                    ackStatusUpdate()
+                    updateRearViewStatus(cmd, cmdSize)
+                }
+
+                Command.SLAVE_HEART_BEAT -> {
+                    ackHeartBeat()
+                }
+
+                Command.HOST_SET_SWITCH -> {}
+                Command.HOST_SET_LIGHT_VOLUME -> {}
+                Command.HOST_SET_HEIGHT_VOLUME -> {}
+                Command.HOST_SET_VIEW_ZOOM -> {}
+                Command.HOST_SET_VIEW_MODE -> {}
+                else -> {}
+            }
+        } else {
+        }
+    }
+    fun ackStatusUpdate() {
+        val cmd = IntArray(1)
+        cmd[0] = Command.SLAVE_UPDATE_STATUS
+        sendCommand(cmd)
+    }
+    fun ackHeartBeat() {
+        val cmd = IntArray(1)
+        cmd[0] = Command.SLAVE_HEART_BEAT
+        sendCommand(cmd)
+    }
+    fun updateRearViewStatus(cmd: IntArray, cmdSize: Int){
+        if (cmd.size >= 6) {
+            viewModel.myLiveData.postValue("后视镜状态 $cmdSize ${cmd.toHexString()}")
+            viewModel.rearSwitchData.postValue(cmd[1] == 1)
+            viewModel.lightData.postValue(cmd[2])
+            viewModel.heightData.postValue(cmd[3])
+            viewModel.zoomData.postValue(cmd[4])
+            viewModel.modeData.postValue(cmd[5])
+            val mirror = RearMirror()
+            mirror.rearSwitch = cmd[1]
+            mirror.lightVolume = cmd[2]
+            mirror.heightVolume = cmd[3]
+            mirror.viewZoom = if (cmd[4] == 0) RearMirror.ViewZoom.ZOOM_10
+            else if (cmd[4] == 1) RearMirror.ViewZoom.ZOOM_12
+            else if (cmd[4] == 2) RearMirror.ViewZoom.ZOOM_14
+            else mirror.viewZoom
+            mirror.viewMode = if (cmd[5] == 0) RearMirror.ViewMode.MODE_STANDARD
+            else if (cmd[5] == 1) RearMirror.ViewMode.MODE_ENHANCED
+            else mirror.viewMode
+            Log.d(
+                "UART",
+                "命令长度: $cmd.size, 命令数据: ${cmd.contentToString()}"
+            )
+        } else {
+            Log.d(
+                "UART",
+                "命令长度不足: $cmd.size, 命令数据: ${cmd.contentToString()}"
+            )
+
+        }
+    }
 }

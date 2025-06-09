@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.vi.vioserial.NormalSerial
 
-class SerialHandler(devicePath: String, baudRate: Int) {
+class SerialHandler(cmmdHandler: CommandHandler, devicePath: String, baudRate: Int) {
     // 成员变量：串口实例
     private val serial: NormalSerial
 
@@ -21,28 +21,25 @@ class SerialHandler(devicePath: String, baudRate: Int) {
 
         // 3. 创建监听器并保存引用
         dataListener = { uartData ->
-            handleReceivedData(uartData)
+            handleReceivedData(cmmdHandler, uartData)
         }
 
         // 4 注册数据监听器
         serial.addDataListener(dataListener)
-        //{ uartData ->
-        //    handleReceivedData(uartData.toByteArray())
-        //}
     }
 
     // 数据处理函数
-    /*private*/ fun handleReceivedData(data: String) {
+    /*private*/ fun handleReceivedData(cmmdHandler: CommandHandler, data: String) {
         if (data.isNotEmpty()) {
             // sendData(data.toByteArray())// 示例：简单回显
             // 转换成IntArray
             val uartData = hexStringToIntArray(data)
 
             // 解析命令, 与receiveCommand重复
-            val cmdResult = CommandHandler.parseUartData(uartData)
+            val cmdResult = cmmdHandler.parseUartData(uartData)
             if (cmdResult != null) {
                 val (cmd, cmdSize) = cmdResult
-                MirrorCommand.receiveCommand(cmd, cmdSize)
+                cmmdHandler.receiveCommand(cmd, cmdSize)
             }
             else{
             }
