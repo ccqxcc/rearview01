@@ -32,38 +32,41 @@ class SerialHandler(devicePath: String, baudRate: Int) {
     }
 
     // 数据处理函数
-    private fun handleReceivedData(data: String) {
+    /*private*/ fun handleReceivedData(data: String) {
         if (data.isNotEmpty()) {
             // sendData(data.toByteArray())// 示例：简单回显
             // 转换成IntArray
+            val uartData = hexStringToIntArray(data)
 
-            val result = StringToIntArray(data)
-            val (uartData, uartDataSize) = result
-/*
             // 解析命令, 与receiveCommand重复
-            val parser = CommandHandler()
-            val cmdResult = parser.parseUartData(uartData)
+            val cmdResult = CommandHandler.parseUartData(uartData)
             if (cmdResult != null) {
                 val (cmd, cmdSize) = cmdResult
-//
-//              val mirrorCommand = MirrorCommand()
-//              mirrorCommand.receiveCommand(cmd,cmdSize)
-                //return updateRearViewStatus(cmd)
+                MirrorCommand.receiveCommand(cmd, cmdSize)
             }
-*/
+            else{
+            }
         }
     }
 
-    fun StringToIntArray(data:String):Pair<IntArray, Int>
-    {
-        val dataUart = IntArray(128)
-        var dataIndex = 0
-        for(i in data.indices) {
-            dataUart[dataIndex] = data[i].code
-            dataIndex ++
+    fun hexStringToIntArray(hexString: String): IntArray {
+        // 1. 移除字符串中的空格和非十六进制字符
+        val cleanHex = hexString.replace("\\s".toRegex(), "")
+
+        // 2. 检查长度是否为偶数（每两个字符表示一个字节）
+        require(cleanHex.length % 2 == 0) { "十六进制字符串长度必须为偶数" }
+
+        // 3. 每两个字符一组转换为整数
+        return IntArray(cleanHex.length / 2) { index ->
+            val start = index * 2
+            val end = start + 2
+            val byteStr = cleanHex.substring(start, end)
+
+            // 4. 将十六进制字符串转换为整数
+            byteStr.toInt(16)
         }
-        return Pair(dataUart, dataIndex)
     }
+
     // 发送数据方法
     fun sendData(uartData: ByteArray) {
         serial.sendHex(uartData.toHexString())

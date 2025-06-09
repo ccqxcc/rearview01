@@ -12,7 +12,7 @@ class Protocal {
     }
 }
 
-class CommandHandler {
+object CommandHandler {
     var uartOpenStatus: Int = -4
     private lateinit var serialHandler: SerialHandler
 
@@ -57,13 +57,13 @@ class CommandHandler {
 
         // 1. 检查最小长度要求
         if (dataSize < 5) {
-            Log.e("UART", "数据帧太短，至少需要5字节")
+            Log.e("UART", "parseUartData 数据帧太短，至少需要5字节")
             return null
         }
 
         // 2. 检查起始字节和结束字节
         if (uartData[0] != Protocal.START_BYTE) {
-            Log.e("UART", "无效的起始字节: ${uartData[0].toHex()} (应为0xA5)")
+            Log.e("UART", "parseUartData 无效的起始字节: ${uartData[0].toHex()} (应为0xA5)")
             return null
         }
 
@@ -73,14 +73,14 @@ class CommandHandler {
         // 4. 检查数据帧长度是否足够
         val expectedSize = 5 + cmdSize
         if (dataSize < expectedSize) {
-            Log.e("UART", "数据帧长度不足: 需要$expectedSize 字节, 实际$dataSize 字节")
+            Log.e("UART", "parseUartData 数据帧长度不足: 需要$expectedSize 字节, 实际$dataSize 字节")
             return null
         }
 
         // 5. 检查结束字节
         val endIndex = 4 + cmdSize
         if (uartData[endIndex] != Protocal.END_BYTE) {
-            Log.e("UART", "无效的结束字节: ${uartData[endIndex].toHex()} (应为0x5A)")
+            Log.e("UART", "parseUartData 无效的结束字节: ${uartData[endIndex].toHex()} (应为0x5A)")
             return null
         }
 
@@ -92,7 +92,7 @@ class CommandHandler {
         if (uartData[checkIndex] != calculatedChecksum) {
             Log.e(
                 "UART",
-                "校验失败: 计算值=${calculatedChecksum.toHex()}, 接收值=${uartData[checkIndex].toHex()}"
+                "parseUartData 校验失败: 计算值=${calculatedChecksum.toHex()}, 接收值=${uartData[checkIndex].toHex()}"
             )
             return null
         }
@@ -103,7 +103,7 @@ class CommandHandler {
             cmd[i] = uartData[3 + i]
         }
 
-        Log.i("UART", "成功解析命令: 长度=$cmdSize, 数据=${cmd.contentToString()}")
+        Log.i("UART", "parseUartData 成功解析命令: 长度=$cmdSize, 数据=${cmd.contentToString()}")
         return Pair(cmd, cmdSize)
     }
 

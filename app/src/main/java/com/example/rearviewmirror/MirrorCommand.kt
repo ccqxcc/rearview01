@@ -1,6 +1,7 @@
 package com.example.rearviewmirror
 
 import android.util.Log
+import android.util.Size
 
 //设车机为HOST, 后视镜为SLAVE
 class Command {
@@ -21,14 +22,18 @@ class Command {
     }
 }
 
-class MirrorCommand {
+object MirrorCommand {
+    var mirror: RearMirror = RearMirror()
+    var updated: Boolean = false
+    fun ifUpdated():Boolean{
+        return updated
+    }
     fun setMirrorSwitch(rearSwitch: Int) {
         val cmd = IntArray(3)
         cmd[0] = Command.HOST_SET_SWITCH
         cmd[1] = rearSwitch
         cmd[2] = 0
-        val cmdHandler = CommandHandler()
-        cmdHandler.sendCommand(cmd)
+        CommandHandler.sendCommand(cmd)
     }
 
     fun setLightVolume(lightVolume: Int) {
@@ -36,8 +41,7 @@ class MirrorCommand {
         cmd[0] = Command.HOST_SET_LIGHT_VOLUME
         cmd[1] = lightVolume
         cmd[2] = 0
-        val cmdHandler = CommandHandler()
-        cmdHandler.sendCommand(cmd)
+        CommandHandler.sendCommand(cmd)
     }
 
     fun setHeightVolume(heightVolume: Int) {
@@ -45,8 +49,7 @@ class MirrorCommand {
         cmd[0] = Command.HOST_SET_HEIGHT_VOLUME
         cmd[1] = heightVolume
         cmd[2] = 0
-        val cmdHandler = CommandHandler()
-        cmdHandler.sendCommand(cmd)
+        CommandHandler.sendCommand(cmd)
     }
 
     fun setViewZoom(viewZoom: Int) {
@@ -54,8 +57,7 @@ class MirrorCommand {
         cmd[0] = Command.HOST_SET_VIEW_ZOOM
         cmd[1] = viewZoom
         cmd[2] = 0
-        val cmdHandler = CommandHandler()
-        cmdHandler.sendCommand(cmd)
+        CommandHandler.sendCommand(cmd)
     }
 
     fun setViewMode(viewMode: Int) {
@@ -63,20 +65,18 @@ class MirrorCommand {
         cmd[0] = Command.HOST_SET_VIEW_MODE
         cmd[1] = viewMode
         cmd[2] = 0
-        val cmdHandler = CommandHandler()
-        cmdHandler.sendCommand(cmd)
+        CommandHandler.sendCommand(cmd)
     }
 
     fun getRearviewStatus() {
         val cmd = IntArray(1)
         cmd[0] = Command.HOST_GET_STATUS
-        val cmdHandler = CommandHandler()
-        cmdHandler.sendCommand(cmd)
+        CommandHandler.sendCommand(cmd)
     }
 
     fun updateRearViewStatus(cmd: IntArray): RearMirror? {
         if (cmd.size >= 6) {
-            val mirror = RearMirror()
+            //val mirror = RearMirror()
             mirror.rearSwitch = cmd[1]
             mirror.lightVolume = cmd[2]
             mirror.heightVolume = cmd[3]
@@ -91,6 +91,7 @@ class MirrorCommand {
                 "UART",
                 "updateRearViewStatus 命令长度: $cmd.size, 命令数据: ${cmd.contentToString()}"
             )
+            updated = true
             return mirror
 
         } else {
@@ -103,7 +104,6 @@ class MirrorCommand {
     }
 
     fun decodeRearviewStatus(): RearMirror? {
-        val parser = CommandHandler()
 
         // 测试用UART数据帧
         val validUartData = intArrayOf(
@@ -115,7 +115,7 @@ class MirrorCommand {
         )
 
         // 解析数据
-        val result = parser.parseUartData(validUartData)
+        val result = CommandHandler.parseUartData(validUartData)
         if (result != null) {
             val (cmd, cmdSize) = result
             return updateRearViewStatus(cmd)
@@ -125,8 +125,7 @@ class MirrorCommand {
     fun getRearviewSoftwareVersion() {
         val cmd = IntArray(1)
         cmd[0] = Command.HOST_GET_VERSION
-        val cmdHandler = CommandHandler()
-        cmdHandler.sendCommand(cmd)
+        CommandHandler.sendCommand(cmd)
     }
 
     fun decodeRearviewSoftwareVersion() {
@@ -136,20 +135,21 @@ class MirrorCommand {
     fun getRearviewDeviceIndentity() {
         val cmd = IntArray(1)
         cmd[0] = Command.HOST_GET_IDENTITY
-        val cmdHandler = CommandHandler()
-        cmdHandler.sendCommand(cmd)
+        CommandHandler.sendCommand(cmd)
     }
 
     fun decodeRearviewDeviceIdentity() {
         //TODO
     }
 
-    fun receiveCommand(uartData: IntArray, len: Int) {
-        val parser = CommandHandler()
-        // 解析数据
-        val result = parser.parseUartData(uartData)
-        if (result != null) {
-            val (cmd, cmdSize) = result
+    fun ackHeartBeat() {
+        val cmd = IntArray(1)
+        cmd[0] = Command.SLAVE_HEART_BEAT
+        CommandHandler.sendCommand(cmd)
+    }
+
+    fun receiveCommand(cmd: IntArray, cmdSize: Int) {
+        if (cmd.size > 0) {
             when (cmd[0]) {
                 Command.HOST_GET_STATUS -> {
                     updateRearViewStatus(cmd)
@@ -161,7 +161,7 @@ class MirrorCommand {
                     updateRearViewStatus(cmd)
                 }
 
-                Command.SLAVE_HEART_BEAT -> {}
+                Command.SLAVE_HEART_BEAT -> {ackHeartBeat()}
                 Command.HOST_SET_SWITCH -> {}
                 Command.HOST_SET_LIGHT_VOLUME -> {}
                 Command.HOST_SET_HEIGHT_VOLUME -> {}
@@ -169,7 +169,8 @@ class MirrorCommand {
                 Command.HOST_SET_VIEW_MODE -> {}
                 else -> {}
             }
-        } else {
+        }
+        else {
         }
     }
 }
