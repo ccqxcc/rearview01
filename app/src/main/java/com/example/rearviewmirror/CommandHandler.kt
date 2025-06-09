@@ -13,7 +13,6 @@ class Protocal {
 }
 
 object CommandHandler {
-    var uartOpenStatus: Int = -4
     private lateinit var serialHandler: SerialHandler
 
     init {
@@ -132,31 +131,4 @@ object CommandHandler {
         }
     }
 
-    fun writeUart(uartData: IntArray) {
-        if (uartOpenStatus != 0) {
-            uartOpenStatus = NormalSerial.instance().open("/dev/ttyS1", 9600)
-        }
-        if (uartOpenStatus == 0) {
-            Log.i("UART", "open success")
-            NormalSerial.instance().sendHex(uartData.toHexString())
-        }
-    }
-
-    fun monitorUart() {
-        if (uartOpenStatus == 0) {
-            // 使用专用线程处理数据
-            val dataProcessor = Executors.newSingleThreadExecutor()
-            NormalSerial.instance().addDataListener { data ->
-                dataProcessor.submit {
-                    // 耗时解析操作,注意，默认接收的类型为hex
-                    //val result = parseComplexData(data)
-                    //runOnUiThread { updateUI(result) }
-                }
-            }
-        }
-    }
-
-    fun openUart() {
-        val serial = NormalSerial.instance().apply { open("/dev/ttyS1", 9600) }
-    }
 }

@@ -69,6 +69,7 @@ object MirrorCommand {
     }
 
     fun getRearviewStatus() {
+        updated = false
         val cmd = IntArray(1)
         cmd[0] = Command.HOST_GET_STATUS
         CommandHandler.sendCommand(cmd)
@@ -103,25 +104,6 @@ object MirrorCommand {
         }
     }
 
-    fun decodeRearviewStatus(): RearMirror? {
-
-        // 测试用UART数据帧
-        val validUartData = intArrayOf(
-            0xA5,                   // 起始字节
-            0x00, 0x07,             // 命令长度高字节和低字节 (长度=7)
-            0x8A, 0x01, 0x0F, 0x05, 0x02, 0x01, 0X00,      // 命令数据
-            0xA5 xor 0x00 xor 0x07 xor 0x8A xor 0x01 xor 0x0F xor 0x05 xor 0x02 xor 0x01 xor 0x00, // 校验字节
-            0x5A                    // 结束字节
-        )
-
-        // 解析数据
-        val result = CommandHandler.parseUartData(validUartData)
-        if (result != null) {
-            val (cmd, cmdSize) = result
-            return updateRearViewStatus(cmd)
-        } else return null
-    }
-
     fun getRearviewSoftwareVersion() {
         val cmd = IntArray(1)
         cmd[0] = Command.HOST_GET_VERSION
@@ -142,6 +124,11 @@ object MirrorCommand {
         //TODO
     }
 
+    fun ackStatusUpdate() {
+        val cmd = IntArray(1)
+        cmd[0] = Command.SLAVE_UPDATE_STATUS
+        CommandHandler.sendCommand(cmd)
+    }
     fun ackHeartBeat() {
         val cmd = IntArray(1)
         cmd[0] = Command.SLAVE_HEART_BEAT
@@ -158,6 +145,7 @@ object MirrorCommand {
                 Command.HOST_GET_VERSION -> {}
                 Command.HOST_GET_IDENTITY -> {}
                 Command.SLAVE_UPDATE_STATUS -> {
+                    ackStatusUpdate()
                     updateRearViewStatus(cmd)
                 }
 

@@ -3,8 +3,8 @@ package com.example.rearviewmirror
 class RearMirror {
     // 成员变量
     var rearSwitch: Int = 0 //[0,1]
-    var lightVolume: Int = 0 //[0,15]
-    var heightVolume: Int = 0 //[0,5]
+    var lightVolume: Int = 0 //[0,14]
+    var heightVolume: Int = 0 //[0,6]
     var viewZoom: ViewZoom = ViewZoom.ZOOM_10
     var viewMode: ViewMode = ViewMode.MODE_STANDARD
 

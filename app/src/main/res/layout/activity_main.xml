@@ -63,7 +63,7 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="15"
+                android:max="14"
                 android:progress="5" />
             <TextView
                 android:id="@+id/lightVolumeText"
@@ -90,7 +90,7 @@
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="5"
+                android:max="6"
                 android:progress="3" />
             <TextView
                 android:id="@+id/heightVolumeText"

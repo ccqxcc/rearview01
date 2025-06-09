@@ -27,27 +27,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         val mirror = RearMirror()
-        //val mirrorCommand = MirrorCommand()
         MirrorCommand.getRearviewStatus()
         // 查询后视镜状态
         val mirrorStatus = findViewById<Button>(R.id.getMirrorStatus)
         mirrorStatus.setOnClickListener {
             //发命令到后视镜并待返回
             MirrorCommand.getRearviewStatus()
-            // 模拟后视镜返回信息，读取并解码
-//            val result = mirrorCommand.decodeRearviewStatus()
+
             //按后视镜返回的信息更新车机界面状态
-//            if (result != null) {
-//                updateActivityView(result)
+//            if (MirrorCommand.ifUpdated()) {
+//                updateActivityView(mirror)
 //            }
 
-            //测试接收函数
-//            val serialHandler =  SerialHandler("/dev/ttyS1", 9600)
-//            serialHandler.handleReceivedData("A500078A010F05020100205A") //("A500018C285A")
-//            if(MirrorCommand.ifUpdated()){
-//                updateActivityView(MirrorCommand.mirror)
-//                Log.d("ABC", "已更新")
-//            }
         }
 
         val rearSwitch = findViewById<Switch>(R.id.rearSwitch)
@@ -71,10 +62,11 @@ class MainActivity : AppCompatActivity() {
         val lightVolume = findViewById<SeekBar>(R.id.lightVolume)
         lightVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                val message = "当前亮度：$progress"
-                Log.d("SeekBar", message)
                 if (fromUser) {
-                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+                    mirror.lightVolume = seekBar.progress + 1
+                    val tvProgress = findViewById<TextView>(R.id.lightVolumeText)
+                    tvProgress.text = mirror.lightVolume.toString()
+                    MirrorCommand.setLightVolume(mirror.lightVolume)
                 }
             }
 
@@ -83,12 +75,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 // 可在此处保存最终进度或执行耗时操作
-                val finalProgress = seekBar.progress
-                val tvProgress = findViewById<TextView>(R.id.lightVolumeText)
-                tvProgress.text = finalProgress.toString()
-                Log.d("SeekBar", "最终亮度：$finalProgress")
-                mirror.lightVolume = finalProgress
-                MirrorCommand.setLightVolume(mirror.lightVolume)
             }
         })
 
@@ -96,10 +82,11 @@ class MainActivity : AppCompatActivity() {
         val heightVolume = findViewById<SeekBar>(R.id.heightVolume)
         heightVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                val message = "当前高度：$progress"
-                Log.d("SeekBar", message)
                 if (fromUser) {
-                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+                    mirror.heightVolume = seekBar.progress + 1
+                    val tvProgress = findViewById<TextView>(R.id.heightVolumeText)
+                    tvProgress.text = mirror.heightVolume.toString()
+                    MirrorCommand.setHeightVolume(mirror.heightVolume)
                 }
             }
 
@@ -108,12 +95,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 // 可在此处保存最终进度或执行耗时操作
-                val finalProgress = seekBar.progress
-                val tvProgress = findViewById<TextView>(R.id.heightVolumeText)
-                tvProgress.text = finalProgress.toString()
-                Log.d("SeekBar", "最终高度：$finalProgress")
-                mirror.heightVolume = finalProgress
-                MirrorCommand.setHeightVolume(mirror.heightVolume)
             }
         })
 
@@ -183,15 +164,15 @@ class MainActivity : AppCompatActivity() {
 
         if (mirror.lightVolume <= 15) {
             val lightVolume = findViewById<SeekBar>(R.id.lightVolume)
-            lightVolume.setProgress(mirror.lightVolume)
+            lightVolume.setProgress(mirror.lightVolume -1)
             val tvProgress = findViewById<TextView>(R.id.lightVolumeText)
             tvProgress.text = mirror.lightVolume.toString()
         } else {
         }
 
-        if (mirror.heightVolume <= 5) {
+        if (mirror.heightVolume <= 7) {
             val heightVolume = findViewById<SeekBar>(R.id.heightVolume)
-            heightVolume.setProgress(mirror.heightVolume)
+            heightVolume.setProgress(mirror.heightVolume -1)
             val tvProgress = findViewById<TextView>(R.id.heightVolumeText)
             tvProgress.text = mirror.heightVolume.toString()
         } else {
