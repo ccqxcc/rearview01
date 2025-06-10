@@ -3,6 +3,7 @@ package com.example.rearviewmirror
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.CompoundButton
 import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.Switch
@@ -18,17 +19,39 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 class MyViewModel : ViewModel() {
-// 定义一个公开的MutableLiveData，用于保存一个字符串
+    // 定义一个公开的MutableLiveData，用于保存一个字符串
     val myLiveData = MutableLiveData<String>()
     val rearSwitchData = MutableLiveData<Boolean>()
     val lightData = MutableLiveData<Int>()
     val heightData = MutableLiveData<Int>()
     val zoomData = MutableLiveData<Int>()
     val modeData = MutableLiveData<Int>()
+
+    override fun onCleared() {
+        // ViewModel 销毁时清理
+    }
 }
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MyViewModel
+    // 声明监听器为成员变量
+    private lateinit var switchListener: CompoundButton.OnCheckedChangeListener
+    private lateinit var lightVolumeListener: SeekBar.OnSeekBarChangeListener
+    private lateinit var heightVolumeListener: SeekBar.OnSeekBarChangeListener
+    private lateinit var viewZoomListener: RadioGroup.OnCheckedChangeListener
+    private lateinit var viewModeListener: RadioGroup.OnCheckedChangeListener
+    private lateinit var cmmdHandler: CommandHandler
+    private lateinit var mirrorCmmd: MirrorCommand
+
+    override fun onStop() {
+        super.onStop()
+        super.onDestroy()
+    }
+    override fun onDestroy() {
+        mirrorCmmd.close()
+        cmmdHandler.close()  // 手动关闭资源
+        super.onDestroy()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,41 +63,24 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-
         registerObserver()
 
-        val cmmdHandler = CommandHandler(viewModel)
-        val mirrorCmmd = MirrorCommand(cmmdHandler)
+        cmmdHandler = CommandHandler(viewModel)
+        mirrorCmmd = MirrorCommand(cmmdHandler)
         mirrorCmmd.getRearviewStatus()
         // 查询后视镜状态
         val mirrorStatus = findViewById<Button>(R.id.getMirrorStatus)
         mirrorStatus.setOnClickListener {
             //发命令到后视镜并待返回
             mirrorCmmd.getRearviewStatus()
-
-            //按后视镜返回的信息更新车机界面状态
-//          updateActivityView(mirror)
-
         }
 
+        // 初始化监听器
+        switchListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
+            mirrorCmmd.setMirrorSwitch(if (isChecked) 1 else 0)
+        }
         val rearSwitch = findViewById<Switch>(R.id.rearSwitch)
-        // 监听 Switch 状态变化
-        rearSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            var rearSwitch: Int = 0
-            if (isChecked) {
-                // Switch 被打开（ON）
-                Toast.makeText(getApplicationContext(), "switch on", Toast.LENGTH_LONG).show()
-                Log.d("Switch", "开关已打开")
-                rearSwitch = 1
-            } else {
-                // Switch 被关闭（OFF）
-                Toast.makeText(getApplicationContext(), "switch off", Toast.LENGTH_LONG).show()
-                Log.d("Switch", "开关已关闭")
-                rearSwitch = 0
-            }
-            mirrorCmmd.setMirrorSwitch(rearSwitch)
-        }
-
+        rearSwitch.setOnCheckedChangeListener (switchListener)
         //监听亮度调节滑动事件
         val lightVolume = findViewById<SeekBar>(R.id.lightVolume)
         lightVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -179,11 +185,10 @@ class MainActivity : AppCompatActivity() {
             // 更新UI，例如设置TextView的文本
             rearSwitchText.text = newValue
         })
-        //TODO BUG: 此处因更新了switch控件，会触发不必要switch事件从而发不必要的设置命令到后视镜
-        val rearSwitchStatus = findViewById<Switch>(R.id.rearSwitch)
         viewModel.rearSwitchData.observe(this, Observer { newValue ->
-            rearSwitchStatus.setChecked(newValue)
+            updateSwitchWithoutTriggeringListener(newValue)
         })
+
         val lightVolume = findViewById<SeekBar>(R.id.lightVolume)
         val lightProgress = findViewById<TextView>(R.id.lightVolumeText)
         viewModel.lightData.observe(this, Observer { newValue ->
@@ -192,9 +197,10 @@ class MainActivity : AppCompatActivity() {
                 lightProgress.text = (newValue + 1).toString()
             }
         })
+
         val heightVolume = findViewById<SeekBar>(R.id.heightVolume)
         val heightProgress = findViewById<TextView>(R.id.heightVolumeText)
-        viewModel.lightData.observe(this, Observer { newValue ->
+        viewModel.heightData.observe(this, Observer { newValue ->
             if (newValue <= 6) {
                 heightVolume.setProgress(newValue + 1)
                 heightProgress.text = (newValue + 1).toString()
@@ -225,5 +231,13 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
+    private fun updateSwitchWithoutTriggeringListener(newState: Boolean) {
+        val switchStatus = findViewById<Switch>(R.id.rearSwitch)
+        // 1. 移除监听器
+        switchStatus.setOnCheckedChangeListener(null)
+        // 2. 更新状态
+        switchStatus.isChecked = newState
+        // 3. 恢复监听器
+        switchStatus.setOnCheckedChangeListener(switchListener)
+    }
 }

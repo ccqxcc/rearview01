@@ -21,6 +21,9 @@ class Command {
 
 class MirrorCommand(_cmmdHandler: CommandHandler)  {
     private lateinit var cmmdHandler: CommandHandler
+    fun close() {
+        // 清理资源
+    }
     // 初始化块（在构造函数执行时调用）
     init {
         cmmdHandler = _cmmdHandler

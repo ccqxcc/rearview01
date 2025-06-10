@@ -11,6 +11,13 @@ class SerialHandler(cmmdHandler: CommandHandler, devicePath: String, baudRate: I
     // 1. 声明成员变量保存监听器引用
     private lateinit var dataListener: (String) -> Unit
 
+    // 关闭串口方法
+    fun close() {
+        serial.removeDataListener(dataListener)
+        serial.close()
+        Log.i("SerialHandler", "串口已关闭")
+    }
+
     // 初始化块（在构造函数执行时调用）
     init {
         // 1. 获取 NormalSerial 单例
@@ -67,13 +74,6 @@ class SerialHandler(cmmdHandler: CommandHandler, devicePath: String, baudRate: I
     // 发送数据方法
     fun sendData(uartData: ByteArray) {
         serial.sendHex(uartData.toHexString())
-    }
-
-    // 关闭串口方法
-    fun close() {
-        serial.removeDataListener(dataListener)
-        serial.close()
-        Log.i("SerialHandler", "串口已关闭")
     }
 
     // ByteArray转十六进制字符串的扩展函数

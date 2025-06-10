@@ -21,7 +21,7 @@ class CommandHandler(private val _viewModel: MyViewModel) {
         viewModel = _viewModel
     }
 
-    fun onDestroy() {
+    fun close() {
         // 清理资源
         serialHandler.close()
     }
@@ -168,7 +168,7 @@ class CommandHandler(private val _viewModel: MyViewModel) {
     }
     fun updateRearViewStatus(cmd: IntArray, cmdSize: Int){
         if (cmd.size >= 6) {
-            viewModel.myLiveData.postValue("后视镜状态 $cmdSize ${cmd.toHexString()}")
+            viewModel.myLiveData.postValue("流媒体后视镜 $cmdSize ${cmd.toHexString()}")
             viewModel.rearSwitchData.postValue(cmd[1] == 1)
             viewModel.lightData.postValue(cmd[2])
             viewModel.heightData.postValue(cmd[3])
