@@ -1,6 +1,9 @@
 package com.example.rearviewmirror
 
 import android.util.Log
+import java.io.File
+import java.util.Date
+
 
 class Protocal {
     companion object {
@@ -9,9 +12,10 @@ class Protocal {
     }
 }
 
-class CommandHandler(private val _viewModel: MyViewModel) {
+class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
     private lateinit var serialHandler: SerialHandler
     private lateinit var viewModel: MyViewModel
+    private lateinit var logFile: File
     init {
         // 初始化串口处理类
         serialHandler = SerialHandler(this,
@@ -19,6 +23,12 @@ class CommandHandler(private val _viewModel: MyViewModel) {
             baudRate = 9600
         )
         viewModel = _viewModel
+
+        logFile = File(_filePath, "Mirror.log")
+        if (!logFile.exists()) {
+            logFile.createNewFile()
+        }
+        Log.i("UART", "logfileName:$logFile")
     }
 
     fun close() {
@@ -43,7 +53,8 @@ class CommandHandler(private val _viewModel: MyViewModel) {
         }
         uartData[3 + cmdSize] = checksum; //异或操作
         uartData[4 + cmdSize] = Protocal.END_BYTE
-        Log.d("UART", "发送数据: ${uartData.contentToString()}")
+        Log.i("UART", "发送数据: ${uartData.toHexString()}")
+        logFile.appendText("${Date()}:UART发送数据: ${uartData.toHexString()}\n")
         val byteData = intArrayToByteArray(uartData)
         serialHandler.sendData(byteData)
     }
@@ -54,13 +65,13 @@ class CommandHandler(private val _viewModel: MyViewModel) {
 
         // 1. 检查最小长度要求
         if (dataSize < 5) {
-            Log.e("UART", "parseUartData 数据帧太短，至少需要5字节")
+            Log.e("UART", "数据帧太短，至少需要5字节")
             return null
         }
 
         // 2. 检查起始字节和结束字节
         if (uartData[0] != Protocal.START_BYTE) {
-            Log.e("UART", "parseUartData 无效的起始字节: ${uartData[0].toHex()} (应为0xA5)")
+            Log.e("UART", "无效的起始字节: ${uartData[0].toHex()} (应为0xA5)")
             return null
         }
 
@@ -70,14 +81,14 @@ class CommandHandler(private val _viewModel: MyViewModel) {
         // 4. 检查数据帧长度是否足够
         val expectedSize = 5 + cmdSize
         if (dataSize < expectedSize) {
-            Log.e("UART", "parseUartData 数据帧长度不足: 需要$expectedSize 字节, 实际$dataSize 字节")
+            Log.e("UART", "数据帧长度不足: 需要$expectedSize 字节, 实际$dataSize 字节")
             return null
         }
 
         // 5. 检查结束字节
         val endIndex = 4 + cmdSize
         if (uartData[endIndex] != Protocal.END_BYTE) {
-            Log.e("UART", "parseUartData 无效的结束字节: ${uartData[endIndex].toHex()} (应为0x5A)")
+            Log.e("UART", "无效的结束字节: ${uartData[endIndex].toHex()} (应为0x5A)")
             return null
         }
 
@@ -89,7 +100,7 @@ class CommandHandler(private val _viewModel: MyViewModel) {
         if (uartData[checkIndex] != calculatedChecksum) {
             Log.e(
                 "UART",
-                "parseUartData 校验失败: 计算值=${calculatedChecksum.toHex()}, 接收值=${uartData[checkIndex].toHex()}"
+                "校验失败: 计算值=${calculatedChecksum.toHex()}, 接收值=${uartData[checkIndex].toHex()}"
             )
             return null
         }
@@ -100,7 +111,8 @@ class CommandHandler(private val _viewModel: MyViewModel) {
             cmd[i] = uartData[3 + i]
         }
 
-        Log.i("UART", "parseUartData 成功解析命令: 长度=$cmdSize, 数据=${cmd.contentToString()}")
+        Log.i("UART", "接收命令: 长度=$cmdSize,数据=${cmd.toHexString()}")
+        logFile.appendText("${Date()}:UART接收命令: ${cmd.toHexString()}\n")
         return Pair(cmd, cmdSize)
     }
 
@@ -118,7 +130,7 @@ class CommandHandler(private val _viewModel: MyViewModel) {
 
     // 将整数数组转为十六进制大写字符串数组
     fun IntArray.toHexString(): String {
-        return joinToString("") {
+        return joinToString(" ") {
             "${it.toString(16).uppercase().padStart(2, '0')}"
         }
     }
@@ -143,7 +155,7 @@ class CommandHandler(private val _viewModel: MyViewModel) {
                 }
 
                 Command.SLAVE_HEART_BEAT -> {
-                    ackHeartBeat()
+                    // ackHeartBeat()
                 }
 
                 Command.HOST_SET_SWITCH -> {}
@@ -187,12 +199,12 @@ class CommandHandler(private val _viewModel: MyViewModel) {
             else mirror.viewMode
             Log.d(
                 "UART",
-                "命令长度: $cmd.size, 命令数据: ${cmd.contentToString()}"
+                "命令长度: $cmd.size, 命令数据: ${cmd.toHexString()}"
             )
         } else {
             Log.d(
                 "UART",
-                "命令长度不足: $cmd.size, 命令数据: ${cmd.contentToString()}"
+                "命令长度不足: $cmd.size, 命令数据: ${cmd.toHexString()}"
             )
 
         }

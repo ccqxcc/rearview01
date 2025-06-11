@@ -1,6 +1,7 @@
 package com.example.rearviewmirror
 
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.widget.Button
 import android.widget.CompoundButton
@@ -11,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.MutableLiveData
@@ -65,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         registerObserver()
 
-        cmmdHandler = CommandHandler(viewModel)
+        cmmdHandler = CommandHandler(viewModel,getLogFilePath())
         mirrorCmmd = MirrorCommand(cmmdHandler)
         mirrorCmmd.getRearviewStatus() // 查询后视镜状态
 
@@ -227,5 +229,19 @@ class MainActivity : AppCompatActivity() {
         }
         // 3. 恢复监听器
         modeStatus.setOnCheckedChangeListener(viewModeListener)
+    }
+    fun getLogFilePath():String
+    {
+//        var textString:String=""
+        val files =
+            ContextCompat.getExternalFilesDirs(getApplicationContext(), Environment.MEDIA_MOUNTED)
+        for (file in files) {
+//            Log.e("Main","file_dir:$file.absolutePath")
+//            textString += ":"+ file.absolutePath
+            return file.absolutePath
+        }
+//        val textForPrint = findViewById<TextView>(R.id.rearSwitchText)
+//        textForPrint.text = textString
+        return ""
     }
 }
