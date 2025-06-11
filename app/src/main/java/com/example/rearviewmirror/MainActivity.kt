@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                     val lightVolume = seekBar.progress
                     val tvProgress = findViewById<TextView>(R.id.lightVolumeText)
                     tvProgress.text = (lightVolume+1).toString()
+                    Log.d("Main", "lightVolume=$lightVolume")
                     mirrorCmmd.setLightVolume(lightVolume)
                 }
             }
@@ -103,69 +104,47 @@ class MainActivity : AppCompatActivity() {
                     val heightVolume = seekBar.progress
                     val tvProgress = findViewById<TextView>(R.id.heightVolumeText)
                     tvProgress.text = (heightVolume+1).toString()
+                    Log.d("Main", "heightVolume=$heightVolume")
                     mirrorCmmd.setHeightVolume(heightVolume)
                 }
             }
-
             override fun onStartTrackingTouch(seekBar: SeekBar) {
             }
-
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 // 可在此处保存最终进度或执行耗时操作
             }
         })
 
-        //缩放
-        val zoomGroup = findViewById<RadioGroup>(R.id.zoomRadioGroup)
-        zoomGroup.setOnCheckedChangeListener { group, checkedId ->
-            var zoomX:Int = -1
+        //缩放, 初始化监听器
+        viewZoomListener = RadioGroup.OnCheckedChangeListener { group, checkedId ->
+            var zoomX: Int = -1
             when (checkedId) {
-                R.id.zoomX1 -> { /* 处理选项1 */
-                    zoomX = 0
-                    Toast.makeText(getApplicationContext(), "zoomX1", Toast.LENGTH_LONG).show()
-                }
-                R.id.zoomX12 -> { /* 处理选项2 */
-                    zoomX = 1
-                    Toast.makeText(getApplicationContext(), "zoomX1.2", Toast.LENGTH_LONG).show()
-                }
-                R.id.zoomX14 -> {/* 处理选项3 */
-                    zoomX = 2
-                    Toast.makeText(getApplicationContext(), "zoomX1.4", Toast.LENGTH_LONG).show()
-                }
-                else -> {
-                    /* 处理异常 */
-                    zoomX = 0
-                    Toast.makeText(getApplicationContext(), "非法值", Toast.LENGTH_LONG).show()
-                }
+                R.id.zoomX1 -> zoomX = 0
+                R.id.zoomX12 -> zoomX = 1
+                R.id.zoomX14 -> zoomX = 2
+                else -> {} //处理异常
             }
-            mirrorCmmd.setViewZoom(zoomX)
+            Log.d("Main", "viewZoom=$zoomX")
+            Toast.makeText(getApplicationContext(), "setViewZoom=$zoomX", Toast.LENGTH_LONG).show()
+            if (zoomX != -1) mirrorCmmd.setViewZoom(zoomX)
         }
+        val zoomStatus = findViewById<RadioGroup>(R.id.zoomRadioGroup)
+        zoomStatus.setOnCheckedChangeListener (viewZoomListener)
 
-        val viewMode = findViewById<RadioGroup>(R.id.viewMode)
-        viewMode.setOnCheckedChangeListener { group, checkedId ->
+        //模式, 初始化监听器
+        viewModeListener = RadioGroup.OnCheckedChangeListener { group, checkedId ->
             var modeX: Int = -1
             when (checkedId) {
-                R.id.viewStandard -> { /* 处理选项1 */
-                    modeX = 0
-                    Toast.makeText(getApplicationContext(), "viewStandard", Toast.LENGTH_LONG)
-                        .show()
-                }
-
-                R.id.viewEnhanced -> {/* 处理选项2 */
-                    modeX = 1
-
-                    Toast.makeText(getApplicationContext(), "viewEnhanced", Toast.LENGTH_LONG)
-                        .show()
-                    Log.d("zoomRadioGroup", "viewEnhanced")
-                }
-
-                else -> {/* 处理异常 */
-                    modeX = 0
-                    Toast.makeText(getApplicationContext(), "非法值", Toast.LENGTH_LONG).show()
-                }
+                R.id.viewStandard -> modeX = 0
+                R.id.viewEnhanced -> modeX = 1
+                else -> {} //处理异常
             }
-            mirrorCmmd.setViewMode(modeX)
+            Log.d("Main", "viewMode=$modeX")
+            Toast.makeText(getApplicationContext(), "setViewMode=$modeX", Toast.LENGTH_LONG).show()
+            if (modeX != -1) mirrorCmmd.setViewMode(modeX)
         }
+        val modeStatus = findViewById<RadioGroup>(R.id.viewMode)
+        modeStatus.setOnCheckedChangeListener (viewModeListener)
 
     }
 
@@ -174,11 +153,11 @@ class MainActivity : AppCompatActivity() {
         // 初始化ViewModel
         viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         // 观察LiveData，当数据变化时更新TextView
-        val rearSwitchText = findViewById<TextView>(R.id.rearSwitchText)
-        viewModel.myLiveData.observe(this, Observer { newValue ->
-            // 更新UI，例如设置TextView的文本
-            rearSwitchText.text = newValue
-        })
+//        val rearSwitchText = findViewById<TextView>(R.id.rearSwitchText)
+//        viewModel.myLiveData.observe(this, Observer { newValue ->
+//            // 更新UI，例如设置TextView的文本
+//            rearSwitchText.text = newValue
+//        })
         viewModel.rearSwitchData.observe(this, Observer { newValue ->
             updateSwitchWithoutTriggeringListener(newValue)
         })
@@ -200,29 +179,12 @@ class MainActivity : AppCompatActivity() {
                 heightProgress.text = (newValue + 1).toString()
             }
         })
-        val zoomGroup = findViewById<RadioGroup>(R.id.zoomRadioGroup)
-        val viewMode = findViewById<RadioGroup>(R.id.viewMode)
+
         viewModel.zoomData.observe(this, Observer { newValue ->
-            if (newValue == 0) {
-                zoomGroup.check(R.id.zoomX1)
-            }
-            if (newValue == 1) {
-                zoomGroup.check(R.id.zoomX12)
-            }
-            if (newValue == 2) {
-                zoomGroup.check(R.id.zoomX14)
-            }
-            else{}
+            updateViewZoomWithoutTriggeringListener(newValue)
         })
         viewModel.modeData.observe(this, Observer { newValue ->
-            if (newValue == 0) {
-                viewMode.check(R.id.viewStandard)
-            }
-            if (newValue == 1) {
-                viewMode.check(R.id.viewEnhanced)
-            }
-            else{
-            }
+            updateViewModeWithoutTriggeringListener(newValue)
         })
     }
     private fun updateSwitchWithoutTriggeringListener(newState: Boolean) {
@@ -233,5 +195,37 @@ class MainActivity : AppCompatActivity() {
         switchStatus.isChecked = newState
         // 3. 恢复监听器
         switchStatus.setOnCheckedChangeListener(switchListener)
+    }
+    private fun updateViewZoomWithoutTriggeringListener(newValue: Int) {
+        val zoomStatus = findViewById<RadioGroup>(R.id.zoomRadioGroup)
+        // 1. 移除监听器
+        zoomStatus.setOnCheckedChangeListener(null)
+        // 2. 更新状态
+        Log.d("Main", "updateViewZoom=$newValue")
+        Toast.makeText(getApplicationContext(), "updateViewZoom=$newValue", Toast.LENGTH_LONG).show()
+        when (newValue){
+            0 -> zoomStatus.check(R.id.zoomX1)
+            1 -> zoomStatus.check(R.id.zoomX12)
+            2 -> zoomStatus.check(R.id.zoomX14)
+            else -> {}
+        }
+        // 3. 恢复监听器
+        zoomStatus.setOnCheckedChangeListener(viewZoomListener)
+    }
+    private fun updateViewModeWithoutTriggeringListener(newValue: Int) {
+        val modeStatus = findViewById<RadioGroup>(R.id.viewMode)
+        // 1. 移除监听器
+        modeStatus.setOnCheckedChangeListener(null)
+        // 2. 更新状态
+        Log.d("Main", "updateViewZoom=$newValue")
+        Toast.makeText(getApplicationContext(), "updateViewMode=$newValue", Toast.LENGTH_LONG)
+            .show()
+        when (newValue) {
+            0 -> modeStatus.check(R.id.viewStandard)
+            1 -> modeStatus.check(R.id.viewEnhanced)
+            else -> {}
+        }
+        // 3. 恢复监听器
+        modeStatus.setOnCheckedChangeListener(viewModeListener)
     }
 }
