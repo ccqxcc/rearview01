@@ -3,156 +3,199 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="天高任鸟飞"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="海阔凭鱼跃" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="举杯邀明月" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="对影成三人"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="查询后视镜状态"
-        android:id="@+id/getMirrorStatus"/>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Switch
-            android:id="@+id/rearSwitch"
-            android:checked="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/rearSwitchText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="流媒体后视镜" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="433dp"
+        android:layout_weight="1"
         android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="亮度调节" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="19sp"
+                android:text="流媒体后视镜" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <SeekBar
-                android:id="@+id/lightVolume"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
+
+            <Switch
+                android:id="@+id/rearSwitch"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:max="14"
-                android:progress="5" />
+                android:checked="true" />
+
             <TextView
-                android:id="@+id/lightVolumeText"
-                android:layout_weight="1"
+                android:id="@+id/rearSwitchText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="流媒体后视镜" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="亮度调节" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5" />
+                android:orientation="horizontal">
+                <SeekBar
+                    android:id="@+id/lightVolume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="14"
+                    android:progress="5" />
+                <TextView
+                    android:id="@+id/lightVolumeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="5" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="高度调节" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <SeekBar
+                    android:id="@+id/heightVolume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="6"
+                    android:progress="3" />
+
+                <TextView
+                    android:id="@+id/heightVolumeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="3" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="缩放" />
+
+            <RadioGroup
+                android:id="@+id/zoomRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/zoomX1"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="X1" />
+
+                <RadioButton
+                    android:id="@+id/zoomX12"
+                    android:layout_weight="1"
+                    android:text="X1.2" />
+
+                <RadioButton
+                    android:id="@+id/zoomX14"
+                    android:layout_weight="1"
+                    android:text="X1.4" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="显示模式" />
+
+            <RadioGroup
+                android:id="@+id/viewMode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/viewStandard"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="标准" />
+
+                <RadioButton
+                    android:id="@+id/viewEnhanced"
+                    android:layout_weight="1"
+                    android:text="增强" />
+            </RadioGroup>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="高度调节" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <SeekBar
-                android:id="@+id/heightVolume"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="6"
-                android:progress="3" />
-            <TextView
-                android:id="@+id/heightVolumeText"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="3" />
-        </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="缩放" />
-        <RadioGroup
-            android:id="@+id/zoomRadioGroup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/zoomX1"
-                android:checked="true"
-                android:text="X1"
-                android:layout_weight="1"/>
-            <RadioButton
-                android:id="@+id/zoomX12"
-                android:text="X1.2"
-                android:layout_weight="1"/>
-            <RadioButton
-                android:id="@+id/zoomX14"
-                android:text="X1.4"
-                android:layout_weight="1"/>
-        </RadioGroup>
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="显示模式" />
-        <RadioGroup
-            android:id="@+id/viewMode"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/viewStandard"
-                android:checked="true"
-                android:text="标准"
-                android:layout_weight="1"/>
-            <RadioButton
-                android:id="@+id/viewEnhanced"
-                android:text="增强"
-                android:layout_weight="1"/>
-        </RadioGroup>
-    </LinearLayout>
 </LinearLayout>

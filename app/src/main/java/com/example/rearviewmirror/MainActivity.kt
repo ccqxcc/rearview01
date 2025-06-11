@@ -67,13 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         cmmdHandler = CommandHandler(viewModel)
         mirrorCmmd = MirrorCommand(cmmdHandler)
-        mirrorCmmd.getRearviewStatus()
-        // 查询后视镜状态
-        val mirrorStatus = findViewById<Button>(R.id.getMirrorStatus)
-        mirrorStatus.setOnClickListener {
-            //发命令到后视镜并待返回
-            mirrorCmmd.getRearviewStatus()
-        }
+        mirrorCmmd.getRearviewStatus() // 查询后视镜状态
 
         // 初始化监听器
         switchListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
