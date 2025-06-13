@@ -6,44 +6,33 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@drawable/bg_mirror">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="15dp"
+        android:textSize="17sp"
+        android:text="流媒体后视镜" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="433dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textSize="19sp"
-                android:text="流媒体后视镜" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="" />
-        </LinearLayout>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:textSize="17sp"
+            android:text=" " />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <Switch
                 android:id="@+id/rearSwitch"
                 android:layout_width="wrap_content"
@@ -57,139 +46,146 @@
                 android:text="流媒体后视镜" />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="亮度调节" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="亮度调节" />
-
-            <LinearLayout
+            android:orientation="horizontal">
+            <SeekBar
+                android:id="@+id/lightVolume"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <SeekBar
-                    android:id="@+id/lightVolume"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:max="14"
-                    android:progress="5" />
-                <TextView
-                    android:id="@+id/lightVolumeText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="5" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+                android:layout_weight="1"
+                android:max="14"
+                android:progress="5" />
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="高度调节" />
-
-            <LinearLayout
+                android:id="@+id/lightVolumeText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <SeekBar
-                    android:id="@+id/heightVolume"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:max="6"
-                    android:progress="3" />
-
-                <TextView
-                    android:id="@+id/heightVolumeText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="3" />
-            </LinearLayout>
+                android:layout_weight="2"
+                android:text="5" />
         </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="高度调节" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <SeekBar
+                android:id="@+id/heightVolume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="6"
+                android:progress="3" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/heightVolumeText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="缩放" />
+                android:layout_weight="2"
+                android:text="3" />
+        </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="缩放" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <RadioGroup
                 android:id="@+id/zoomRadioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
                 android:orientation="horizontal">
-
                 <RadioButton
                     android:id="@+id/zoomX1"
                     android:layout_weight="1"
-                    android:text="X1" />
+                    android:text="X1"
+                    android:background="@drawable/button_states"/>
                 <RadioButton
                     android:id="@+id/zoomX12"
                     android:layout_weight="1"
                     android:text="X1.2"
+                    android:background="@drawable/button_states"
                     android:checked="true"/>
                 <RadioButton
                     android:id="@+id/zoomX14"
                     android:layout_weight="1"
-                    android:text="X1.4" />
+                    android:text="X1.4"
+                    android:background="@drawable/button_states"/>
             </RadioGroup>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text=" " />
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_mode" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="显示模式" />
+            android:orientation="horizontal">
             <RadioGroup
                 android:id="@+id/viewMode"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
                 android:orientation="horizontal">
                 <RadioButton
                     android:id="@+id/viewStandard"
-                    android:layout_weight="1"
-                    android:text="标准" />
+                    android:layout_weight="2"
+                    android:text="@string/view_mode_standard"
+                    android:background="@drawable/button_states"
+                    android:checked="true"/>
                 <RadioButton
                     android:id="@+id/viewEnhanced"
                     android:layout_weight="1"
-                    android:text="增强"
-                    android:checked="true"/>
+                    android:text="@string/view_mode_enhanced"
+                    android:background="@drawable/button_states"/>
             </RadioGroup>
+            <TextView
+                android:id="@+id/heightVolumeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text=" " />
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
+
+
 
 </LinearLayout>

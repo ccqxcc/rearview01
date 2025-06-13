@@ -1,5 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="status_bar">@android:color/transparent</color>
+
+    <color name="bg">#D2DAE4</color>
+    <color name="text_uns">#4F555A</color>
+    <color name="text_sel">#1368FB</color>
+    <color name="item_bg">#F5F7F9</color>
+    <color name="item_msg_text">#909294</color>
+    <color name="dialog_bg">#D3DBE6</color>
+    <color name="item_unenable_bg">#ececec</color>
+
+    <color name="seekbar_progress">#1368FB</color>
+    <color name="divider">#aa868686</color>
+
+    <color name="display_con_bg">#d3dbe5</color>
+    <color name="display_bg">#E5ECF4</color>-
+    <color name="transparent">@android:color/transparent</color>
+
+    <color name="item_text_sel">#FFFFFFFF</color>
+
+    <color name="dialog_btn_sel">#1368FB</color>
+    <color name="con_btn_uns">#9BB9EC</color>
+    <color name="local_source_side_navi_item_bg_end">#00ffffff</color>
+    <color name="local_source_side_navi_item_bg_start">#99ffffff</color>
+    <color name="local_source_brand_color_main">#1368FB</color>
+
+    <color name="local_source_quick_item_bg_unable">#D6DCE3</color>
+    <color name="local_source_quick_item_bg_able">#F5F7F9</color>
+
+    <color name="fa_fill_a1_5">#5915191f</color>
+    <color name="fa_label_level_1">#e5000000</color>
+    <color name="fa_label_level_1_dark">#e5ffffff</color>
+
+    <color name="fa_side_navi_item_bg_end">#00ffffff</color>
+    <color name="fa_side_navi_item_bg_indicator">#1368fb</color>
+    <color name="fa_side_navi_item_bg_start">#99ffffff</color>
+    <color name="fa_brand_color_main">#1368fb</color>
+
+    <color name="con_common_icon">#000000</color>
+
+    <color name="icon_title_back_1">#ffffff</color>
+    <color name="icon_title_back_2">#00000000</color>
+    <color name="icon_title_back_3">#000000</color>
+
+    <color name="icon_eye">#000000</color>
+    <color name="spinner_icon">#000</color>
+
+    <color name="common_icon">#666666</color>
+    <color name="common_icon_white">#ffffff</color>
+    <color name="common_icon_blue">#1368fb</color>
+
+    <color name="bg_common">#D3DBE5</color>
 </resources>
