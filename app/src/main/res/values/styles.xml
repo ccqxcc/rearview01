@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--自定义seekbarstyle-->
+    <style name="CustomSeekbarStyle" >
+        <item name="android:maxHeight">@dimen/seekbar_hor_height</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@color/seekbar_progress</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress</item>
+        <item name="android:minHeight">10dp</item>
+        <item name="android:thumb"></item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+</resources>

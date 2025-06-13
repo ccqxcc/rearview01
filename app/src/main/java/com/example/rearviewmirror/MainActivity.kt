@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity() {
 
         cmmdHandler = CommandHandler(viewModel,getLogFilePath())
         mirrorCmmd = MirrorCommand(cmmdHandler)
-        mirrorCmmd.getRearviewStatus() // 查询后视镜状态
 
         // 初始化监听器
         switchListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
@@ -77,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         }
         val rearSwitch = findViewById<Switch>(R.id.rearSwitch)
         rearSwitch.setOnCheckedChangeListener (switchListener)
+
         //监听亮度调节滑动事件
         val lightVolume = findViewById<SeekBar>(R.id.lightVolume)
         lightVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         }
         val modeStatus = findViewById<RadioGroup>(R.id.viewMode)
         modeStatus.setOnCheckedChangeListener (viewModeListener)
-
+        mirrorCmmd.getRearviewStatus() // 查询后视镜状态
     }
 
     fun registerObserver()
