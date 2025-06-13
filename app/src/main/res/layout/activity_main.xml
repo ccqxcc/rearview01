@@ -37,8 +37,10 @@
                 android:id="@+id/rearSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:switchMinWidth="55dp"
+                android:thumbTint="@drawable/switch_color"
+                android:trackTint="@drawable/switch_color"
                 android:checked="true" />
-
             <TextView
                 android:id="@+id/rearSwitchText"
                 android:layout_width="wrap_content"
