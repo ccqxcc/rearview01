@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider
 class MyViewModel : ViewModel() {
     // 定义一个公开的MutableLiveData，用于保存一个字符串
     val myLiveData = MutableLiveData<String>()
+    val debugTextData = MutableLiveData<String>()
     val rearSwitchData = MutableLiveData<Boolean>()
     val lightData = MutableLiveData<Int>()
     val heightData = MutableLiveData<Int>()
@@ -36,6 +37,7 @@ class MyViewModel : ViewModel() {
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MyViewModel
+
     // 声明监听器为成员变量
     private lateinit var switchListener: CompoundButton.OnCheckedChangeListener
     private lateinit var lightVolumeListener: SeekBar.OnSeekBarChangeListener
@@ -49,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         super.onDestroy()
     }
+
     override fun onDestroy() {
         mirrorCmmd.close()
         cmmdHandler.close()  // 手动关闭资源
@@ -67,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
         registerObserver()
 
-        cmmdHandler = CommandHandler(viewModel,getLogFilePath())
+        cmmdHandler = CommandHandler(viewModel, getLogFilePath())
         mirrorCmmd = MirrorCommand(cmmdHandler)
 
         // 初始化监听器
@@ -75,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             mirrorCmmd.setMirrorSwitch(if (isChecked) 1 else 0)
         }
         val rearSwitch = findViewById<Switch>(R.id.rearSwitch)
-        rearSwitch.setOnCheckedChangeListener (switchListener)
+        rearSwitch.setOnCheckedChangeListener(switchListener)
 
         //监听亮度调节滑动事件
         val lightVolume = findViewById<SeekBar>(R.id.lightVolume)
@@ -84,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 if (fromUser) {
                     val lightVolume = seekBar.progress
                     val tvProgress = findViewById<TextView>(R.id.lightVolumeText)
-                    tvProgress.text = (lightVolume+1).toString()
+                    tvProgress.text = (lightVolume + 1).toString()
                     Log.d("Main", "lightVolume=$lightVolume")
                     mirrorCmmd.setLightVolume(lightVolume)
                 }
@@ -105,13 +108,15 @@ class MainActivity : AppCompatActivity() {
                 if (fromUser) {
                     val heightVolume = seekBar.progress
                     val tvProgress = findViewById<TextView>(R.id.heightVolumeText)
-                    tvProgress.text = (heightVolume+1).toString()
+                    tvProgress.text = (heightVolume + 1).toString()
                     Log.d("Main", "heightVolume=$heightVolume")
                     mirrorCmmd.setHeightVolume(heightVolume)
                 }
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar) {
             }
+
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 // 可在此处保存最终进度或执行耗时操作
             }
@@ -131,7 +136,7 @@ class MainActivity : AppCompatActivity() {
             if (zoomX != -1) mirrorCmmd.setViewZoom(zoomX)
         }
         val zoomStatus = findViewById<RadioGroup>(R.id.zoomRadioGroup)
-        zoomStatus.setOnCheckedChangeListener (viewZoomListener)
+        zoomStatus.setOnCheckedChangeListener(viewZoomListener)
 
         //模式, 初始化监听器
         viewModeListener = RadioGroup.OnCheckedChangeListener { group, checkedId ->
@@ -146,17 +151,21 @@ class MainActivity : AppCompatActivity() {
             if (modeX != -1) mirrorCmmd.setViewMode(modeX)
         }
         val modeStatus = findViewById<RadioGroup>(R.id.viewMode)
-        modeStatus.setOnCheckedChangeListener (viewModeListener)
+        modeStatus.setOnCheckedChangeListener(viewModeListener)
         mirrorCmmd.getRearviewStatus() // 查询后视镜状态
     }
 
-    fun registerObserver()
-    {
+    fun registerObserver() {
         // 初始化ViewModel
         viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         // 观察LiveData，当数据变化时更新TextView
-        val debugText = findViewById<TextView>(R.id.viewDebugLog)
+        val debugLog = findViewById<TextView>(R.id.viewDebugLog)
         viewModel.myLiveData.observe(this, Observer { newValue ->
+            debugLog.text = newValue
+        })
+        // 观察LiveData，当数据变化时更新TextView
+        val debugText = findViewById<TextView>(R.id.viewDebugText)
+        viewModel.debugTextData.observe(this, Observer { newValue ->
             debugText.text = newValue
         })
         viewModel.rearSwitchData.observe(this, Observer { newValue ->
@@ -188,6 +197,7 @@ class MainActivity : AppCompatActivity() {
             updateViewModeWithoutTriggeringListener(newValue)
         })
     }
+
     private fun updateSwitchWithoutTriggeringListener(newState: Boolean) {
         val switchStatus = findViewById<Switch>(R.id.rearSwitch)
         // 1. 移除监听器
@@ -197,14 +207,16 @@ class MainActivity : AppCompatActivity() {
         // 3. 恢复监听器
         switchStatus.setOnCheckedChangeListener(switchListener)
     }
+
     private fun updateViewZoomWithoutTriggeringListener(newValue: Int) {
         val zoomStatus = findViewById<RadioGroup>(R.id.zoomRadioGroup)
         // 1. 移除监听器
         zoomStatus.setOnCheckedChangeListener(null)
         // 2. 更新状态
         Log.d("Main", "updateViewZoom=$newValue")
-        Toast.makeText(getApplicationContext(), "updateViewZoom=$newValue", Toast.LENGTH_LONG).show()
-        when (newValue){
+        Toast.makeText(getApplicationContext(), "updateViewZoom=$newValue", Toast.LENGTH_LONG)
+            .show()
+        when (newValue) {
             0 -> zoomStatus.check(R.id.zoomX1)
             1 -> zoomStatus.check(R.id.zoomX12)
             2 -> zoomStatus.check(R.id.zoomX14)
@@ -213,6 +225,7 @@ class MainActivity : AppCompatActivity() {
         // 3. 恢复监听器
         zoomStatus.setOnCheckedChangeListener(viewZoomListener)
     }
+
     private fun updateViewModeWithoutTriggeringListener(newValue: Int) {
         val modeStatus = findViewById<RadioGroup>(R.id.viewMode)
         // 1. 移除监听器
@@ -229,8 +242,8 @@ class MainActivity : AppCompatActivity() {
         // 3. 恢复监听器
         modeStatus.setOnCheckedChangeListener(viewModeListener)
     }
-    fun getLogFilePath():String
-    {
+
+    fun getLogFilePath(): String {
 //        var textString:String=""
         val files =
             ContextCompat.getExternalFilesDirs(getApplicationContext(), Environment.MEDIA_MOUNTED)

@@ -13,18 +13,26 @@ class Protocal {
     companion object {
         const val START_BYTE = 0xA5
         const val END_BYTE = 0x5A
+        const val CMMD_GAP = 180
+        const val MAX_RETX = 8
     }
 }
 
-class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
+class CommandHandler(private val _viewModel: MyViewModel, val _filePath: String) {
     private lateinit var serialHandler: SerialHandler
     private lateinit var viewModel: MyViewModel
     private lateinit var logFile: File
     private var isInSendGap: Boolean = false
-    private var cmdNumber: Int = 0
+    private var isAcked: Boolean = false
+    private var cmdReTx = IntArray(3)
+    private var reTxNum: Int = 0
+    private var cmdSend: Int = 0
+    private var cmdReceived: Int = 0
+
     init {
         // 初始化串口处理类
-        serialHandler = SerialHandler(this,
+        serialHandler = SerialHandler(
+            this,
             devicePath = "/dev/ttyS1",
             baudRate = 9600
         )
@@ -47,12 +55,25 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
             isInSendGap = true
             delay(delayInMillis)
             isInSendGap = false
+
+            if ((!isAcked) and (reTxNum < Protocal.MAX_RETX)) {
+                reSend(cmdReTx)
+            }
         }
     }
 
     // 处理数据的函数
     fun sendCommand(cmd: IntArray) {
         if (isInSendGap) return
+        isAcked = false
+        reTxNum = 0
+        cmdReTx = cmd
+        reSend(cmd)
+    }
+
+    fun reSend(cmd: IntArray)
+    {
+        reTxNum++
         val cmdSize = cmd.size
         // 创建足够长的 uartData 数组（至少 cmdSize + 4）
         val uartData = IntArray(cmdSize + 5)
@@ -68,14 +89,14 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
         }
         uartData[3 + cmdSize] = checksum; //异或操作
         uartData[4 + cmdSize] = Protocal.END_BYTE
-        Log.i("UART", "发送数据: ${uartData.toHexString()}")
+        //Log.i("UART", "发送数据: ${uartData.toHexString()}")
         logFile.appendText("${Date()}:UART发送数据: ${uartData.toHexString()}\n")
         val byteData = intArrayToByteArray(uartData)
         serialHandler.sendData(byteData)
-
-        val delayGap: Long = (if (cmdSize < 100) (100 - cmdSize.toLong()) else 100)
+        showSendText(cmd, cmdSize)
+        val delayGap: Long =
+            (if (cmdSize < Protocal.CMMD_GAP) (Protocal.CMMD_GAP - cmdSize.toLong()) else Protocal.CMMD_GAP.toLong())
         delayUsingCoroutines(delayGap)
-
     }
 
     // 解析UART数据帧的函数
@@ -159,19 +180,21 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
             intArray[index].toByte() // 直接转换，但注意符号问题
         }
     }
+
     fun receiveCommand(cmd: IntArray, cmdSize: Int) {
         if (cmd.size > 0) {
             showDebugText(cmd, cmdSize)
 
             when (cmd[0]) {
                 Command.HOST_GET_STATUS -> {
+                    isAcked = true
                     updateRearViewStatus(cmd, cmdSize)
                 }
 
                 Command.HOST_GET_VERSION -> {}
                 Command.HOST_GET_IDENTITY -> {}
                 Command.SLAVE_UPDATE_STATUS -> {
-                    ackStatusUpdate()
+                    //ackStatusUpdate()
                     updateRearViewStatus(cmd, cmdSize)
                 }
 
@@ -179,27 +202,42 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
                     // ackHeartBeat()
                 }
 
-                Command.HOST_SET_SWITCH -> {}
-                Command.HOST_SET_LIGHT_VOLUME -> {}
-                Command.HOST_SET_HEIGHT_VOLUME -> {}
-                Command.HOST_SET_VIEW_ZOOM -> {}
-                Command.HOST_SET_VIEW_MODE -> {}
-                else -> {}
+                Command.HOST_SET_SWITCH -> {
+                    isAcked = true
+                }
+
+                Command.HOST_SET_LIGHT_VOLUME -> {
+                    isAcked = true
+                }
+
+                Command.HOST_SET_HEIGHT_VOLUME -> {
+                    isAcked = true
+                }
+
+                Command.HOST_SET_VIEW_ZOOM -> {
+                    isAcked = true
+                }
+
+                Command.HOST_SET_VIEW_MODE -> {
+                    isAcked = true
+                }
             }
-        } else {
         }
     }
+
     fun ackStatusUpdate() {
         val cmd = IntArray(1)
         cmd[0] = Command.SLAVE_UPDATE_STATUS
         sendCommand(cmd)
     }
+
     fun ackHeartBeat() {
         val cmd = IntArray(1)
         cmd[0] = Command.SLAVE_HEART_BEAT
         sendCommand(cmd)
     }
-    fun updateRearViewStatus(cmd: IntArray, cmdSize: Int){
+
+    fun updateRearViewStatus(cmd: IntArray, cmdSize: Int) {
         if (cmd.size >= 6) {
             viewModel.rearSwitchData.postValue(cmd[1] == 1)
             viewModel.lightData.postValue(cmd[2])
@@ -218,12 +256,20 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
 
         }
     }
+
     fun showDebugText(cmd: IntArray, cmdSize: Int) {
         if (cmd.size > 0) {
             if (cmd[0] != Command.SLAVE_HEART_BEAT) {
-                cmdNumber++
-                viewModel.myLiveData.postValue("$cmdNumber $cmdSize ${cmd.toHexString()}")
+                cmdReceived++
+                viewModel.myLiveData.postValue("Recv: $cmdReceived $cmdSize ${cmd.toHexString()}")
             }
         }
     }
+
+    fun showSendText(cmd: IntArray, cmdSize: Int) {
+        cmdSend++
+        viewModel.debugTextData.postValue("Send: $cmdSend $cmdSize ${cmd.toHexString()}")
+
+    }
+
 }
