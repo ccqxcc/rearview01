@@ -1,6 +1,10 @@
 package com.example.rearviewmirror
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Date
 
@@ -16,6 +20,8 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
     private lateinit var serialHandler: SerialHandler
     private lateinit var viewModel: MyViewModel
     private lateinit var logFile: File
+    private var isInSendGap: Boolean = false
+    private var cmdNumber: Int = 0
     init {
         // 初始化串口处理类
         serialHandler = SerialHandler(this,
@@ -36,8 +42,17 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
         serialHandler.close()
     }
 
+    fun delayUsingCoroutines(delayInMillis: Long) {
+        CoroutineScope(Dispatchers.Main).launch {
+            isInSendGap = true
+            delay(delayInMillis)
+            isInSendGap = false
+        }
+    }
+
     // 处理数据的函数
     fun sendCommand(cmd: IntArray) {
+        if (isInSendGap) return
         val cmdSize = cmd.size
         // 创建足够长的 uartData 数组（至少 cmdSize + 4）
         val uartData = IntArray(cmdSize + 5)
@@ -57,6 +72,10 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
         logFile.appendText("${Date()}:UART发送数据: ${uartData.toHexString()}\n")
         val byteData = intArrayToByteArray(uartData)
         serialHandler.sendData(byteData)
+
+        val delayGap: Long = (if (cmdSize < 100) (100 - cmdSize.toLong()) else 100)
+        delayUsingCoroutines(delayGap)
+
     }
 
     // 解析UART数据帧的函数
@@ -142,6 +161,8 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
     }
     fun receiveCommand(cmd: IntArray, cmdSize: Int) {
         if (cmd.size > 0) {
+            showDebugText(cmd, cmdSize)
+
             when (cmd[0]) {
                 Command.HOST_GET_STATUS -> {
                     updateRearViewStatus(cmd, cmdSize)
@@ -180,23 +201,11 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
     }
     fun updateRearViewStatus(cmd: IntArray, cmdSize: Int){
         if (cmd.size >= 6) {
-            viewModel.myLiveData.postValue("流媒体后视镜 $cmdSize ${cmd.toHexString()}")
             viewModel.rearSwitchData.postValue(cmd[1] == 1)
             viewModel.lightData.postValue(cmd[2])
             viewModel.heightData.postValue(cmd[3])
             viewModel.zoomData.postValue(cmd[4])
             viewModel.modeData.postValue(cmd[5])
-            val mirror = RearMirror()
-            mirror.rearSwitch = cmd[1]
-            mirror.lightVolume = cmd[2]
-            mirror.heightVolume = cmd[3]
-            mirror.viewZoom = if (cmd[4] == 0) RearMirror.ViewZoom.ZOOM_10
-            else if (cmd[4] == 1) RearMirror.ViewZoom.ZOOM_12
-            else if (cmd[4] == 2) RearMirror.ViewZoom.ZOOM_14
-            else mirror.viewZoom
-            mirror.viewMode = if (cmd[5] == 0) RearMirror.ViewMode.MODE_STANDARD
-            else if (cmd[5] == 1) RearMirror.ViewMode.MODE_ENHANCED
-            else mirror.viewMode
             Log.d(
                 "UART",
                 "命令长度: $cmd.size, 命令数据: ${cmd.toHexString()}"
@@ -207,6 +216,14 @@ class CommandHandler(private val _viewModel: MyViewModel,val _filePath:String) {
                 "命令长度不足: $cmd.size, 命令数据: ${cmd.toHexString()}"
             )
 
+        }
+    }
+    fun showDebugText(cmd: IntArray, cmdSize: Int) {
+        if (cmd.size > 0) {
+            if (cmd[0] != Command.SLAVE_HEART_BEAT) {
+                cmdNumber++
+                viewModel.myLiveData.postValue("$cmdNumber $cmdSize ${cmd.toHexString()}")
+            }
         }
     }
 }

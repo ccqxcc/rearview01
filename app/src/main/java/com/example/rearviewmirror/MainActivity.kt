@@ -155,11 +155,10 @@ class MainActivity : AppCompatActivity() {
         // 初始化ViewModel
         viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
         // 观察LiveData，当数据变化时更新TextView
-//        val rearSwitchText = findViewById<TextView>(R.id.rearSwitchText)
-//        viewModel.myLiveData.observe(this, Observer { newValue ->
-//            // 更新UI，例如设置TextView的文本
-//            rearSwitchText.text = newValue
-//        })
+        val debugText = findViewById<TextView>(R.id.viewDebugLog)
+        viewModel.myLiveData.observe(this, Observer { newValue ->
+            debugText.text = newValue
+        })
         viewModel.rearSwitchData.observe(this, Observer { newValue ->
             updateSwitchWithoutTriggeringListener(newValue)
         })
