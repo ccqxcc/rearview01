@@ -38,9 +38,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:switchMinWidth="55dp"
-                android:thumbTint="@drawable/switch_color"
-                android:trackTint="@drawable/switch_color"
-                android:checked="true" />
+                android:thumb="@drawable/thumb"
+                android:track="@drawable/track"
+                android:checked="false" />
             <TextView
                 android:id="@+id/rearSwitchText"
                 android:layout_width="wrap_content"
