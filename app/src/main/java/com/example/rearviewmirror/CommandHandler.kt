@@ -13,7 +13,7 @@ class Protocal {
     companion object {
         const val START_BYTE = 0xA5
         const val END_BYTE = 0x5A
-        const val CMMD_GAP = 180
+        const val CMMD_GAP = 300//180
         const val MAX_RETX = 8
     }
 }
@@ -89,10 +89,10 @@ class CommandHandler(private val _viewModel: MyViewModel, val _filePath: String)
         }
         uartData[3 + cmdSize] = checksum; //异或操作
         uartData[4 + cmdSize] = Protocal.END_BYTE
-        //Log.i("UART", "发送数据: ${uartData.toHexString()}")
-        logFile.appendText("${Date()}:UART发送数据: ${uartData.toHexString()}\n")
         val byteData = intArrayToByteArray(uartData)
         serialHandler.sendData(byteData)
+        //Log.i("UART", "发送数据: ${uartData.toHexString()}")
+        logFile.appendText("${Date()}:UART发送数据: ${uartData.toHexString()}\n")
         showSendText(cmd, cmdSize)
         val delayGap: Long =
             (if (cmdSize < Protocal.CMMD_GAP) (Protocal.CMMD_GAP - cmdSize.toLong()) else Protocal.CMMD_GAP.toLong())

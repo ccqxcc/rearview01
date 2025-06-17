@@ -132,7 +132,6 @@ class MainActivity : AppCompatActivity() {
                 else -> {} //处理异常
             }
             Log.d("Main", "viewZoom=$zoomX")
-            Toast.makeText(getApplicationContext(), "setViewZoom=$zoomX", Toast.LENGTH_LONG).show()
             if (zoomX != -1) mirrorCmmd.setViewZoom(zoomX)
         }
         val zoomStatus = findViewById<RadioGroup>(R.id.zoomRadioGroup)
@@ -147,7 +146,6 @@ class MainActivity : AppCompatActivity() {
                 else -> {} //处理异常
             }
             Log.d("Main", "viewMode=$modeX")
-            Toast.makeText(getApplicationContext(), "setViewMode=$modeX", Toast.LENGTH_LONG).show()
             if (modeX != -1) mirrorCmmd.setViewMode(modeX)
         }
         val modeStatus = findViewById<RadioGroup>(R.id.viewMode)
@@ -158,16 +156,16 @@ class MainActivity : AppCompatActivity() {
     fun registerObserver() {
         // 初始化ViewModel
         viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
-        // 观察LiveData，当数据变化时更新TextView
-        val debugLog = findViewById<TextView>(R.id.viewDebugLog)
-        viewModel.myLiveData.observe(this, Observer { newValue ->
-            debugLog.text = newValue
-        })
-        // 观察LiveData，当数据变化时更新TextView
-        val debugText = findViewById<TextView>(R.id.viewDebugText)
-        viewModel.debugTextData.observe(this, Observer { newValue ->
-            debugText.text = newValue
-        })
+//        // 观察LiveData，当数据变化时更新TextView
+//        val debugLog = findViewById<TextView>(R.id.viewDebugLog)
+//        viewModel.myLiveData.observe(this, Observer { newValue ->
+//            debugLog.text = newValue
+//        })
+//        val debugText = findViewById<TextView>(R.id.viewDebugText)
+//        viewModel.debugTextData.observe(this, Observer { newValue ->
+//            debugText.text = newValue
+//        })
+
         viewModel.rearSwitchData.observe(this, Observer { newValue ->
             updateSwitchWithoutTriggeringListener(newValue)
         })
@@ -214,8 +212,7 @@ class MainActivity : AppCompatActivity() {
         zoomStatus.setOnCheckedChangeListener(null)
         // 2. 更新状态
         Log.d("Main", "updateViewZoom=$newValue")
-        Toast.makeText(getApplicationContext(), "updateViewZoom=$newValue", Toast.LENGTH_LONG)
-            .show()
+        // Toast.makeText(getApplicationContext(), "updateViewZoom=$newValue", Toast.LENGTH_LONG).show()
         when (newValue) {
             0 -> zoomStatus.check(R.id.zoomX1)
             1 -> zoomStatus.check(R.id.zoomX12)
@@ -232,8 +229,6 @@ class MainActivity : AppCompatActivity() {
         modeStatus.setOnCheckedChangeListener(null)
         // 2. 更新状态
         Log.d("Main", "updateViewZoom=$newValue")
-        Toast.makeText(getApplicationContext(), "updateViewMode=$newValue", Toast.LENGTH_LONG)
-            .show()
         when (newValue) {
             0 -> modeStatus.check(R.id.viewStandard)
             1 -> modeStatus.check(R.id.viewEnhanced)
