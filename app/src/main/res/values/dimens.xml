@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="radius_2">2dp</dimen>
+    <!--seekbar_hor-->
+    <dimen name="seekbar_hor_height">30dp</dimen>
+    <!--con_bt-->
+    <dimen name="con_bt_20dp">26dp</dimen>
+    <dimen name="con_bt_10dp">13dp</dimen>
+</resources>
