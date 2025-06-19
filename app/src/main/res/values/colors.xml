@@ -3,7 +3,9 @@
     <color name="item_bg">#F5F7F9</color>
     <color name="seekbar_progress">#1368FB</color>
     <color name="con_common_icon">#000000</color>
-    <color name="common_icon_white">#ffffff</color>
-    <color name="common_icon_blue">#1368fb</color>
-    <color name="common_icon_gray">#9e9e9e</color>
+    <color name="common_icon_white">#FFFFFF</color>
+    <color name="common_icon_blue">#1368FB</color>
+    <color name="common_icon_gray">#9E9E9E</color>
+    <color name="selected_color">#FFFFFF</color>
+    <color name="unselected_color">#000000</color>
 </resources>

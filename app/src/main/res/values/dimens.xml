@@ -4,6 +4,11 @@
     <!--seekbar_hor-->
     <dimen name="seekbar_hor_height">30dp</dimen>
     <!--con_bt-->
+    <dimen name="con_bt_180dp">180dp</dimen>
+    <dimen name="con_bt_60dp">72dp</dimen>
+    <dimen name="con_bt_40dp">40dp</dimen>
+    <dimen name="con_bt_30dp">30dp</dimen>
     <dimen name="con_bt_20dp">26dp</dimen>
     <dimen name="con_bt_10dp">13dp</dimen>
+    <dimen name="con_bt_5dp">6dp</dimen>
 </resources>

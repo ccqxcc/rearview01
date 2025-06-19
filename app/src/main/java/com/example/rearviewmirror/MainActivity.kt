@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         lightVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    val lightVolume = seekBar.progress
+                    val lightVolume = seekBar.progress /2
                     val tvProgress = findViewById<TextView>(R.id.lightVolumeText)
                     tvProgress.text = (lightVolume + 1).toString()
                     Log.d("Main", "lightVolume=$lightVolume")
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         heightVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    val heightVolume = seekBar.progress
+                    val heightVolume = seekBar.progress /4
                     val tvProgress = findViewById<TextView>(R.id.heightVolumeText)
                     tvProgress.text = (heightVolume + 1).toString()
                     Log.d("Main", "heightVolume=$heightVolume")
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
         val lightProgress = findViewById<TextView>(R.id.lightVolumeText)
         viewModel.lightData.observe(this, Observer { newValue ->
             if (newValue <= 14) {
-                lightVolume.setProgress(newValue + 1)
+                lightVolume.setProgress(newValue*2 + 1)
                 lightProgress.text = (newValue + 1).toString()
             }
         })
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity() {
         val heightProgress = findViewById<TextView>(R.id.heightVolumeText)
         viewModel.heightData.observe(this, Observer { newValue ->
             if (newValue <= 6) {
-                heightVolume.setProgress(newValue + 1)
+                heightVolume.setProgress(newValue*4 + 1)
                 heightProgress.text = (newValue + 1).toString()
             }
         })

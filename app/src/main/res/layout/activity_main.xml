@@ -17,18 +17,40 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="15dp"
         android:textSize="17sp"
-        android:text="流媒体后视镜" />
+        android:text="            " />
 
+    <Button
+        android:id="@+id/exit_button"
+        android:layout_width="@dimen/con_bt_20dp"
+        android:layout_height="@dimen/con_bt_20dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/btn_round"
+        android:backgroundTint="@color/common_icon_white"
+        android:textSize="10sp"
+        android:text="x" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:text="流媒体内后视镜调节"
+            android:textSize="17sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:text=""
+            android:textSize="17sp" />
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:textSize="17sp"
-            android:text=" " />
+            android:layout_height="wrap_content"
+            android:text="" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,12 +62,12 @@
                 android:switchMinWidth="55dp"
                 android:thumb="@drawable/thumb"
                 android:track="@drawable/track"
-                android:checked="false" />
+                android:checked="true" />
             <TextView
                 android:id="@+id/rearSwitchText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="流媒体后视镜" />
+                android:text="流媒体内后视镜" />
         </LinearLayout>
 
         <TextView
@@ -55,11 +77,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="亮度调节" />
+            android:text="" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="7sp"
+            android:text="亮度" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="" />
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,7 +97,7 @@
                 android:layout_marginRight="15sp"
                 android:layout_weight="1"
                 style="@style/CustomSeekbarStyle"
-                android:max="14"
+                android:max="28"
                 android:progress="5" />
             <TextView
                 android:id="@+id/lightVolumeText"
@@ -88,11 +113,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="高度调节" />
+            android:text="高度" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="7sp"
             android:text="" />
         <LinearLayout
             android:layout_width="match_parent"
@@ -106,7 +130,7 @@
                 android:layout_marginRight="15sp"
                 android:layout_weight="1"
                 style="@style/CustomSeekbarStyle"
-                android:max="6"
+                android:max="24"
                 android:progress="3" />
 
             <TextView
@@ -124,7 +148,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="缩放" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -139,18 +171,24 @@
                 <RadioButton
                     android:id="@+id/zoomX1"
                     android:layout_weight="1"
-                    android:text="X1"
+                    android:text="正常"
+                    android:gravity="center"
+                    android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"/>
                 <RadioButton
                     android:id="@+id/zoomX12"
                     android:layout_weight="1"
-                    android:text="X1.2"
+                    android:text="1.2倍"
+                    android:gravity="center"
+                    android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"
                     android:checked="true"/>
                 <RadioButton
                     android:id="@+id/zoomX14"
                     android:layout_weight="1"
-                    android:text="X1.4"
+                    android:text="1.4倍"
+                    android:gravity="center"
+                    android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"/>
             </RadioGroup>
             <TextView
@@ -164,10 +202,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/view_mode" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -183,12 +226,16 @@
                     android:id="@+id/viewStandard"
                     android:layout_weight="1"
                     android:text="@string/view_mode_standard"
+                    android:gravity="center"
+                    android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"
                     android:checked="true"/>
                 <RadioButton
                     android:id="@+id/viewEnhanced"
                     android:layout_weight="1"
                     android:text="@string/view_mode_enhanced"
+                    android:gravity="center"
+                    android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"/>
             </RadioGroup>
             <TextView

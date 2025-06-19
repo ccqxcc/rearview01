@@ -2,4 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <size android:width="@dimen/con_bt_20dp" />
     <solid android:color="@color/common_icon_blue" />
+    <corners android:radius="@dimen/con_bt_180dp"/>
 </shape>

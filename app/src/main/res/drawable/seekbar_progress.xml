@@ -4,7 +4,7 @@
     <!--定义seekbar滑动条的底色-->
     <item android:id="@android:id/background">
         <shape>
-            <corners android:radius="0dp" />
+            <corners android:radius="@dimen/con_bt_60dp" />
             <gradient
                 android:angle="270"
                 android:centerColor="#eeeff3"
@@ -17,7 +17,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners android:radius="0dp"/>
+                <corners android:radius="@dimen/con_bt_60dp"/>
                 <solid android:color="@color/seekbar_progress"/>
             </shape>
         </clip>

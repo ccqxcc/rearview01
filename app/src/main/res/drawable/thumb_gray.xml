@@ -2,9 +2,10 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <size
         android:height="@dimen/con_bt_20dp"
-        android:width="@dimen/con_bt_10dp" />
+        android:width="@dimen/con_bt_20dp"/>
     <solid android:color="@color/common_icon_white" />
+    <corners android:radius="@dimen/con_bt_180dp"/>
     <stroke
-        android:width="2dp"
+        android:width="@dimen/con_bt_10dp"
         android:color="@color/common_icon_gray" />
 </shape>
