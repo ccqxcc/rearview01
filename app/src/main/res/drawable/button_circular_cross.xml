@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 第一层：圆形背景 -->
+    <item android:drawable="@drawable/bg_circular_button"/>
+
+    <!-- 第二层：旋转的十字图标（居中） -->
+    <item
+        android:drawable="@drawable/ic_cross_45"
+        android:gravity="center"
+        android:width="24dp"
+    android:height="24dp"/>
+</layer-list>

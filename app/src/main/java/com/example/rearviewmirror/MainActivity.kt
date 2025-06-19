@@ -1,8 +1,10 @@
 package com.example.rearviewmirror
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.RadioGroup
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        super.onDestroy()
+        onDestroy()
     }
 
     override fun onDestroy() {
@@ -66,6 +68,19 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val exitButton = findViewById<Button>(R.id.exit_button)
+        exitButton.setOnClickListener {
+            // 1. 添加按钮动画（可选）
+            it.animate().rotationBy(405f).setDuration(300).start()
+            // 2. 延迟执行退出（让动画完成）
+            it.postDelayed({
+                // 3. 安全结束当前 Activity
+                if (!isFinishing) {
+                    finish()
+                }
+            }, 300) // 匹配动画时长
         }
 
         registerObserver()
