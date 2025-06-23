@@ -5,5 +5,5 @@
     <solid android:color="@color/item_bg" />
     <size
         android:width="500dp"
-        android:height="@dimen/con_bt_40dp" />
+        android:height="@dimen/button_hor_height" />
 </shape>

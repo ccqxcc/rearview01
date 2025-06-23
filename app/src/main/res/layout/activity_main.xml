@@ -34,7 +34,7 @@
             android:gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:text="流媒体内后视镜调节"
-            android:textSize="17sp" />
+            android:textSize="@dimen/title_text_msg_size"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:id="@+id/rearSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:switchMinWidth="55dp"
+                android:switchMinWidth="@dimen/con_bt_50dp"
                 android:thumb="@drawable/thumb"
                 android:track="@drawable/track"
                 android:checked="true" />
@@ -63,6 +63,7 @@
                 android:id="@+id/rearSwitchText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/common_text_msg_size"
                 android:text="流媒体内后视镜" />
         </LinearLayout>
 
@@ -74,6 +75,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/common_text_msg_size"
             android:text="亮度" />
         <TextView
             android:layout_width="wrap_content"
@@ -95,8 +97,9 @@
             <TextView
                 android:id="@+id/lightVolumeText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/seekbar_hor_height"
                 android:layout_weight="2"
+                android:gravity="center_vertical"
                 android:text="5" />
         </LinearLayout>
         <TextView
@@ -106,6 +109,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/common_text_msg_size"
             android:text="高度" />
         <TextView
             android:layout_width="wrap_content"
@@ -129,8 +133,9 @@
             <TextView
                 android:id="@+id/heightVolumeText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/seekbar_hor_height"
                 android:layout_weight="2"
+                android:gravity="center_vertical"
                 android:text="3" />
         </LinearLayout>
 
@@ -145,6 +150,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/common_text_msg_size"
             android:text="缩放" />
         <TextView
             android:layout_width="wrap_content"
@@ -165,6 +171,7 @@
                     android:id="@+id/zoomX1"
                     android:layout_weight="1"
                     android:text="正常"
+                    android:textSize="@dimen/common_text_msg_size"
                     android:gravity="center"
                     android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"/>
@@ -172,6 +179,7 @@
                     android:id="@+id/zoomX12"
                     android:layout_weight="1"
                     android:text="1.2倍"
+                    android:textSize="@dimen/common_text_msg_size"
                     android:gravity="center"
                     android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"
@@ -180,6 +188,7 @@
                     android:id="@+id/zoomX14"
                     android:layout_weight="1"
                     android:text="1.4倍"
+                    android:textSize="@dimen/common_text_msg_size"
                     android:gravity="center"
                     android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"/>
@@ -199,6 +208,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/common_text_msg_size"
             android:text="@string/view_mode" />
         <TextView
             android:layout_width="wrap_content"
@@ -219,6 +229,7 @@
                     android:id="@+id/viewStandard"
                     android:layout_weight="1"
                     android:text="@string/view_mode_standard"
+                    android:textSize="@dimen/common_text_msg_size"
                     android:gravity="center"
                     android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"
@@ -227,6 +238,7 @@
                     android:id="@+id/viewEnhanced"
                     android:layout_weight="1"
                     android:text="@string/view_mode_enhanced"
+                    android:textSize="@dimen/common_text_msg_size"
                     android:gravity="center"
                     android:button="@drawable/radio_button_selector"
                     android:background="@drawable/button_states"/>

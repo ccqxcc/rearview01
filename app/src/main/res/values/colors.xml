@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="item_bg">#F5F7F9</color>
-    <color name="seekbar_progress">#4D8DFC</color>
+    <color name="seekbar_progress">#4DACFC</color>
     <color name="con_common_icon">#000000</color>
     <color name="common_icon_white">#FFFFFF</color>
-    <color name="common_icon_blue">#4D8DFC</color>
+    <color name="common_icon_blue">#4DACFC</color>
+    <color name="common_icon_blue_1">#4D8DFC</color>
     <color name="common_icon_gray">#9E9E9E</color>
     <color name="selected_color">#FFFFFF</color>
     <color name="unselected_color">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="transparent">#00000000</color> <!-- 透明 -->
+    <color name="almost_transparent">#01FFFFFF</color>/> <!-- 接近透明的浅色 -->
 </resources>
